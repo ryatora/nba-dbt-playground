@@ -1,0 +1,20 @@
+name: nba_playground
+version: "1.0.0"
+profile: nba_playground
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+
+vars:
+  # staging で残すシーズンの開始年。全テーブル共通
+  start_season_year: 2000
+
+models:
+  nba_playground:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate

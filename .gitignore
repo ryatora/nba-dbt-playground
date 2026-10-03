@@ -1,0 +1,26 @@
+# Python
+.venv/
+__pycache__/
+
+# Kaggle から取得したデータ。元の統計データは NBA.com 由来のため、再配布しない
+data/
+
+# DuckDB（メモリが足りないときに使う一時ディレクトリを含む）
+*.duckdb
+*.duckdb.wal
+*.duckdb.tmp/
+
+# 認証情報（kaggle.json・access_token は Kaggle CLI の認証ファイル。誤って置いた場合の保険）
+.env
+kaggle.json
+access_token
+
+# macOS
+.DS_Store
+
+# dbt
+target/
+logs/
+dbt_packages/
+.user.yml
+dbt_internal_packages/

@@ -1,0 +1,21 @@
+SELECT
+    personId AS player_id,
+    firstName AS first_name,
+    lastName AS last_name,
+    CONCAT_WS(' ', firstName, lastName) AS player_name,
+    birthDate AS birth_date,
+    school,
+    country,
+    heightInches AS height_inches,
+    ROUND(heightInches * 2.54, 1) AS height_cm,
+    bodyWeightLbs AS weight_lbs,
+    ROUND(bodyWeightLbs * 0.45359237, 1) AS weight_kg,
+    guard = 1 AS is_guard,
+    forward = 1 AS is_forward,
+    center = 1 AS is_center,
+    draftYear AS draft_year,
+    draftRound AS draft_round,
+    draftNumber AS draft_number,
+    fromYear AS first_season_start_year,
+    toYear AS last_season_start_year
+FROM {{ source('raw', 'players') }}

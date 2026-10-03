@@ -1,0 +1,9 @@
+nba_playground:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      # リポジトリのルートで実行する前提の相対パス。scripts/load_raw.py も同じファイルに書き込む
+      path: nba.duckdb
+      schema: main
+      threads: 4

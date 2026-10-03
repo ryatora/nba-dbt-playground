@@ -1,0 +1,277 @@
+models:
+  - name: stg_games
+    description: >
+      試合の一覧。粒度: 1 試合 1 行（game_id）。
+      {{ doc("start_season_year_filter") }}
+    columns:
+      - name: game_id
+        description: '{{ doc("game_id") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: season_start_year
+        description: '{{ doc("season_start_year") }}'
+      - name: season
+        description: '{{ doc("season") }}'
+        data_tests:
+          - not_null
+      - name: game_type
+        description: '{{ doc("game_type") }}'
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [Preseason, Regular Season, All-Star, Playoffs, Play-In, NBA Cup Final]
+      - name: game_label
+        description: >
+          試合の区分の表示名（例: NBA Finals、East First Round）。プレーオフや特別な試合だけに入っている。
+          表記揺れがあるため、集計には game_type を使う。
+      - name: game_sub_label
+        description: "game_label の補足（例: Game 5）。"
+      - name: game_started_at_est
+        description: 試合開始日時（米国東部時間）。
+      - name: game_date
+        description: '{{ doc("game_date") }}'
+        data_tests:
+          - not_null
+      - name: home_team_id
+        description: ホームチームの team_id。
+        data_tests:
+          - not_null
+      - name: away_team_id
+        description: アウェイチームの team_id。
+        data_tests:
+          - not_null
+      - name: home_score
+        description: ホームチームの得点。
+        data_tests:
+          - not_null
+      - name: away_score
+        description: アウェイチームの得点。
+        data_tests:
+          - not_null
+      - name: winner_team_id
+        description: 勝ったチームの team_id。home_team_id か away_team_id のどちらか。
+        data_tests:
+          - not_null
+      - name: attendance
+        description: 観客数。近年の試合だけに入っていて、古い試合は null。arena_name などの会場の列も同じ。
+
+  - name: stg_players
+    description: >
+      選手の一覧。粒度: 1 選手 1 行（player_id）。シーズンでは絞らない。
+      生年月日・身長・体重・ドラフトなどの経歴は、一部の選手で null。
+    columns:
+      - name: player_id
+        description: '{{ doc("player_id") }}'
+        data_tests:
+          - unique
+          - not_null
+      - name: player_name
+        description: first_name と last_name をスペースでつないだもの。
+      - name: height_inches
+        description: 身長（インチ）。height_cm はこれを cm に換算したもの。
+      - name: weight_lbs
+        description: 体重（ポンド）。weight_kg はこれを kg に換算したもの。
+      - name: is_guard
+        description: ガードとして登録されているか。is_forward・is_center と同時に true になることがあり、どれも false の選手もいる。
+      - name: first_season_start_year
+        description: 最初に在籍したシーズンの開始年。経歴が入っていない選手は null。
+      - name: last_season_start_year
+        description: 最後に在籍したシーズンの開始年。現役の選手や、経歴が入っていない選手は null のことがある。
+
+  - name: stg_team_histories
+    description: >
+      チームの移転・改名の履歴。粒度: 1 チームの 1 つの名称の期間につき 1 行（同じ team_id に複数行ある）。
+      NBA・BAA に属したことのないチーム（EuroLeague など）も含むが、これらは試合のデータには出てこない。
+      シーズンでは絞らない。
+    columns:
+      - name: team_id
+        description: '{{ doc("team_id") }}'
+        data_tests:
+          - not_null
+      - name: first_season_start_year
+        description: この名称を使い始めたシーズンの開始年。
+      - name: last_season_start_year
+        description: この名称を最後に使ったシーズンの開始年。現在の名称は null。
+      - name: is_current
+        description: 現在の名称か。
+
+  - name: stg_team_game_stats
+    description: >
+      チームの試合ごとのボックススコア。粒度: 1 試合 × 1 チームにつき 1 行（game_id × team_id）。
+      クォーターごとの得点・ベンチの得点などの詳細な列は、プレシーズンの大半の試合と一部の試合で null。
+      {{ doc("start_season_year_filter") }}
+    columns:
+      - name: game_id
+        description: '{{ doc("game_id") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_games')
+                field: game_id
+      - name: team_id
+        description: '{{ doc("team_id") }}'
+        data_tests:
+          - not_null
+      - name: opponent_team_id
+        description: 対戦相手のチームの team_id。
+        data_tests:
+          - not_null
+      - name: season_start_year
+        description: '{{ doc("season_start_year") }}'
+      - name: season
+        description: '{{ doc("season") }}'
+      - name: game_type
+        description: '{{ doc("game_type") }}'
+      - name: game_date
+        description: '{{ doc("game_date") }}'
+      - name: points
+        description: チームの得点。
+        data_tests:
+          - not_null
+      - name: opponent_points
+        description: 対戦相手の得点。
+        data_tests:
+          - not_null
+      - name: bench_points
+        description: ベンチから出場した選手の得点の合計。
+      - name: minutes
+        description: チームの選手の出場時間の合計（分）。延長がなければ 240（5 人 × 48 分）。
+      - name: overtime_points
+        description: 延長の得点の合計。延長がない試合はほとんどが null。
+      - name: season_wins
+        description: この試合を終えた時点での、シーズンの通算勝利数。
+      - name: season_losses
+        description: この試合を終えた時点での、シーズンの通算敗戦数。
+      - name: playoff_seed
+        description: プレーオフ・プレーインのシード順位。それ以外の試合はほとんどが null。
+      - name: three_pointers_attempted
+        description: >
+          3P の試投数。3P ラインは 1979-80 シーズンに導入されたが、元データでは 1984-85 シーズンまで
+          ほぼ 0 で記録されている。start_season_year を 1985 より前にする場合に注意する。
+
+  - name: stg_player_game_stats
+    description: >
+      選手の試合ごとのボックススコア。粒度: 1 試合 × 1 選手につき 1 行（game_id × player_id）。
+      ベンチ入りして出場しなかった試合の行も含む。元データに混ざっているチーム合計の行（personId が null）は除く。
+      {{ doc("start_season_year_filter") }}
+    columns:
+      - name: game_id
+        description: >
+          {{ doc("game_id") }}
+          {{ doc("game_id_not_in_games") }}
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_games')
+                field: game_id
+              # 元データの欠けで stg_games にない試合があるため、失敗ではなく警告にする
+              config:
+                severity: warn
+      - name: player_id
+        description: '{{ doc("player_id") }}'
+        data_tests:
+          - not_null
+      - name: season_start_year
+        description: '{{ doc("season_start_year") }}'
+      - name: season
+        description: '{{ doc("season") }}'
+      - name: game_type
+        description: '{{ doc("game_type") }}'
+      - name: game_date
+        description: >
+          {{ doc("game_date") }}
+          一部のプレシーズンの行は null。
+      - name: team_id
+        description: >
+          選手の所属チーム。元データで空の行がある（opponent_team_id も同じ）。
+          補ったものは int_player_game_stats を使う。
+      - name: starting_position
+        description: 先発したときのポジション（G・F・C）。ベンチから出場した場合と、出場しなかった場合は null。
+      - name: is_starter
+        description: 先発したか。false にはベンチから出場した場合と、出場しなかった場合の両方を含む。
+      - name: status_comment
+        description: "出場しなかった理由（例: DNP - Coach's Decision）。出場しなかった行でも null のことがある。"
+      - name: minutes
+        description: >
+          出場時間（分）。元データの一部（プレシーズン）にある '6:05' のような分:秒の値は分に換算する。
+          負の値は誤りとみなして null にする。
+
+  - name: stg_shots
+    description: >
+      シュートの記録。粒度: 1 シュート 1 行（game_id × action_number）。
+      Play-by-Play のうちフィールドゴールの試投で、フリースローは含まない。
+      {{ doc("start_season_year_filter") }}
+    columns:
+      - name: game_id
+        description: >
+          {{ doc("game_id") }}
+          {{ doc("game_id_not_in_games") }}
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_games')
+                field: game_id
+              # 元データの欠けで stg_games にない試合があるため、失敗ではなく警告にする
+              config:
+                severity: warn
+      - name: action_number
+        description: 試合の中でのプレーの通し番号。
+        data_tests:
+          - not_null
+      - name: season_start_year
+        description: '{{ doc("season_start_year") }}'
+      - name: season
+        description: '{{ doc("season") }}'
+      - name: game_type
+        description: '{{ doc("game_type") }}'
+      - name: game_date
+        description: >
+          {{ doc("game_date") }}
+          stg_games と結合できない試合は null。
+      - name: period
+        description: ピリオド。1〜4 が通常のクォーターで、5 以降は延長。
+        data_tests:
+          - not_null
+      - name: clock
+        description: "ピリオドの残り時間。ISO 8601 の期間の形式（例: PT11M56.00S は残り 11 分 56 秒）。"
+      - name: team_id
+        description: シュートしたチーム。
+        data_tests:
+          - not_null
+      - name: team_abbreviation
+        description: "チームの略称（例: BOS）。2025-26 シーズンの一部の試合は null。"
+      - name: player_name
+        description: >
+          シュートした選手の名前。null の行がある（大半は 2025-26 シーズンの一部の試合）ため、
+          名前が必要なときは player_id で stg_players と結合する。
+      - name: shot_type
+        description: "シュートの種類（例: Jump Shot、Layup Shot）。"
+      - name: is_made
+        description: 決まったか。
+        data_tests:
+          - not_null
+      - name: shot_value
+        description: >
+          2 点か 3 点か。2019-20 シーズンの途中で元データの記録の形式が変わったため、
+          新しい形式では actionType（'2pt'・'3pt'）から求める。元データの誤った値（0）は null にする。
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [2, 3]
+      - name: shot_distance_ft
+        description: リングからの距離（フィート）。コートの長さ（94 フィート）を超える誤った値は null にする。
+      - name: area_detail
+        description: "リングからの距離の帯（フィート）と方向（例: 16-24 Left）。area と同じく 2021-22 シーズンまでは null。"
+      - name: description
+        description: "プレーの説明文（例: MISS V. Wembanyama driving Layup）。"
+      - name: area
+        description: "シュートしたエリア（例: Restricted Area、Left Corner 3）。2021-22 シーズンまでは null。"
+      - name: x
+        description: コート上の横方向の位置。2019-20 シーズンの途中より前は null。
+      - name: y
+        description: コート上の縦方向の位置。2019-20 シーズンの途中より前は null。

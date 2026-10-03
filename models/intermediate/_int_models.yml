@@ -1,0 +1,21 @@
+models:
+  - name: int_player_game_stats
+    description: >
+      stg_player_game_stats の所属チームを補ったもの。粒度: 1 試合 × 1 選手につき 1 行（game_id × player_id）。
+      列は stg_player_game_stats と同じで、team_id・opponent_team_id の値だけが異なる。その他の列の説明は stg_player_game_stats を参照。
+    columns:
+      - name: game_id
+        description: '{{ doc("game_id") }}'
+        data_tests:
+          - not_null
+      - name: player_id
+        description: '{{ doc("player_id") }}'
+        data_tests:
+          - not_null
+      - name: team_id
+        description: >
+          選手の所属チーム。元データで空の行は、同じ試合の stg_team_game_stats から、
+          チームの都市名とチーム名で照合して補う。チーム名が空の一部のプレシーズンの行と、
+          一部のオールスターの行は補えず null。
+      - name: opponent_team_id
+        description: 対戦相手のチーム。team_id と同じ方法で補う。
