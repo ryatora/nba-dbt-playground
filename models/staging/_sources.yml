@@ -1,0 +1,21 @@
+sources:
+  - name: raw
+    description: >
+      Kaggle「NBA Dataset: Box Scores and Stats (1947 - Today)」（Eoin A. Moore, CC0）を
+      scripts/load_raw.py で読み込んだもの。
+    schema: raw
+    tables:
+      - name: games
+        description: 1 試合 1 行。
+      - name: players
+        description: 1 選手 1 行。
+      - name: team_histories
+        description: チームの移転・改名の履歴。NBA 以外（EuroLeague など）のチームも含む。
+      - name: team_statistics
+        description: 1 試合 × 1 チームのボックススコア。
+      - name: player_statistics
+        description: 1 試合 × 1 選手のボックススコア。
+      - name: play_by_play
+        description: >
+          プレーごとの記録。1996-97 シーズン以降。
+          シュート位置の座標 (x, y) は 2019-20 シーズンの途中から入っている。
