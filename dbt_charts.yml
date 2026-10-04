@@ -1,0 +1,7 @@
+# dbt Charts の設定。ボードは sources に登録した接続を `source: <名前>` で選ぶ。
+# 種類と項目の一覧は `dct docs sources` を参照。
+sources:
+  # dbt build で作った DuckDB のファイルを直接読む。dbt の profile を経由しない。
+  nba:
+    type: duckdb
+    path: ./nba.duckdb

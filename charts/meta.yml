@@ -1,0 +1,8 @@
+# charts/ 以下のすべてのボードの既定値。ボード側で同じキーを書くと上書きされる。
+source: nba
+
+style:
+  title:
+    font:
+      # 既定のテーマはタイトルを title case に変換し、「3P」が「3p」になるため。
+      case: none
