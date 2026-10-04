@@ -1,0 +1,13 @@
+width: 640
+
+charts:
+  shot_coordinates_note:
+    type: callout
+    title: シュートの座標について
+    # 「2019-20」の後で改行されないよう、ハイフンに改行しない記号（U+2011）を使う
+    message: シュートのコート上の座標は、2019‑20シーズンから記録されています。それより前のシーズンは、シュートチャートを描けません。2019‑20も、一部の試合は座標がありません。
+    style:
+      tone: info
+
+rows:
+  - shot_coordinates_note

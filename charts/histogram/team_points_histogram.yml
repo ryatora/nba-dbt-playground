@@ -1,0 +1,22 @@
+queries:
+  team_points:
+    sql: |
+      SELECT points
+      FROM {{ ref('stg_team_game_stats') }}
+      WHERE
+          season_start_year = 2025
+          AND game_type = 'Regular Season'
+          AND team_name IS NOT NULL
+
+charts:
+  team_points:
+    query: team_points
+    type: histogram
+    title: 1試合のチームの得点の分布
+    subtitle: 2025-26 レギュラーシーズン
+    x: points
+    x_label: 1試合の得点
+    y_label: 試合数
+
+rows:
+  - team_points
