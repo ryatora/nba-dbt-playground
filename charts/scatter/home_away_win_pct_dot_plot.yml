@@ -1,0 +1,71 @@
+# 色はグラフではなく、ボードの style.charts.category_colors で、データの値ごとに指定する
+style:
+  charts:
+    category_colors:
+      home_away:
+        values:
+          ホーム: "#ED174C"
+          アウェイ: "#006BB6"
+
+queries:
+  home_away_win_pct:
+    sql: |
+      WITH games AS (
+          SELECT
+              team_city || ' ' || team_name AS team,
+              is_home,
+              is_win
+          FROM {{ ref('stg_team_game_stats') }}
+          WHERE
+              season_start_year = 2025
+              AND game_type = 'Regular Season'
+              AND team_name IS NOT NULL
+      ),
+
+      -- 勝利数の上位10チーム
+      top_teams AS (
+          SELECT
+              team,
+              COUNT_IF(is_win) AS wins
+          FROM games
+          GROUP BY team
+          ORDER BY COUNT_IF(is_win) DESC
+          LIMIT 10
+      )
+
+      SELECT
+          games.team,
+          CASE WHEN games.is_home THEN 'ホーム' ELSE 'アウェイ' END AS home_away,
+          AVG(CAST(games.is_win AS INTEGER)) AS win_pct,
+          MIN(top_teams.wins) AS wins
+      FROM games
+      INNER JOIN top_teams ON games.team = top_teams.team
+      GROUP BY games.team, games.is_home
+
+charts:
+  home_away_win_pct:
+    query: home_away_win_pct
+    type: scatter
+    title: ホームとアウェイの勝率
+    subtitle: 2025-26 レギュラーシーズンの勝利数の上位10チーム
+    x: win_pct
+    y: team
+    color: home_away
+    sort:
+      by: wins
+      order: desc
+    x_label: 勝率
+    style:
+      axis_x:
+        labels:
+          format: ".0%"
+      axis_y:
+        title:
+          visible: false
+      legend:
+        title:
+          visible: false
+        values: [ホーム, アウェイ]
+
+rows:
+  - home_away_win_pct
