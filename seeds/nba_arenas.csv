@@ -1,0 +1,31 @@
+team,team_name,arena,latitude,longitude,state_abbr,state_fips
+Atlanta Hawks,Hawks,State Farm Arena,33.757222,-84.396389,GA,13
+Boston Celtics,Celtics,TD Garden,42.366389,-71.062222,MA,25
+Brooklyn Nets,Nets,Barclays Center,40.68265,-73.974689,NY,36
+Charlotte Hornets,Hornets,Spectrum Center,35.225,-80.839167,NC,37
+Chicago Bulls,Bulls,United Center,41.880556,-87.674167,IL,17
+Cleveland Cavaliers,Cavaliers,Rocket Arena,41.496389,-81.688056,OH,39
+Dallas Mavericks,Mavericks,American Airlines Center,32.790556,-96.810278,TX,48
+Denver Nuggets,Nuggets,Ball Arena,39.748611,-105.0075,CO,8
+Detroit Pistons,Pistons,Little Caesars Arena,42.3412,-83.0549,MI,26
+Golden State Warriors,Warriors,Chase Center,37.767833,-122.387389,CA,6
+Houston Rockets,Rockets,Toyota Center,29.750833,-95.362222,TX,48
+Indiana Pacers,Pacers,Gainbridge Fieldhouse,39.763889,-86.155556,IN,18
+Los Angeles Clippers,Clippers,Intuit Dome,33.945127,-118.343102,CA,6
+Los Angeles Lakers,Lakers,Crypto.com Arena,34.043056,-118.267222,CA,6
+Memphis Grizzlies,Grizzlies,FedExForum,35.138333,-90.050556,TN,47
+Miami Heat,Heat,Kaseya Center,25.781389,-80.188056,FL,12
+Milwaukee Bucks,Bucks,Fiserv Forum,43.0451,-87.9182,WI,55
+Minnesota Timberwolves,Timberwolves,Target Center,44.979444,-93.276111,MN,27
+New Orleans Pelicans,Pelicans,Smoothie King Center,29.948889,-90.081944,LA,22
+New York Knicks,Knicks,Madison Square Garden,40.750501,-73.993453,NY,36
+Oklahoma City Thunder,Thunder,Paycom Center,35.463333,-97.515,OK,40
+Orlando Magic,Magic,Kia Center,28.539167,-81.383611,FL,12
+Philadelphia 76ers,76ers,Xfinity Mobile Arena,39.90115,-75.17197,PA,42
+Phoenix Suns,Suns,Mortgage Matchup Center,33.445833,-112.071389,AZ,4
+Portland Trail Blazers,Trail Blazers,Moda Center,45.531667,-122.666667,OR,41
+Sacramento Kings,Kings,Golden 1 Center,38.58,-121.5,CA,6
+San Antonio Spurs,Spurs,Frost Bank Center,29.426944,-98.4375,TX,48
+Toronto Raptors,Raptors,Scotiabank Arena,43.643333,-79.379167,,
+Utah Jazz,Jazz,Delta Center,40.768333,-111.901111,UT,49
+Washington Wizards,Wizards,Capital One Arena,38.898056,-77.020833,DC,11

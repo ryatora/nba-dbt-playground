@@ -1,0 +1,18 @@
+# NBA の現在の30チームの本拠地アリーナと座標、所在地の州（Wikidata、CC0）
+# https://query.wikidata.org/ で実行し、結果を seeds/_seeds.yml の説明のとおりに変換して nba_arenas.csv にした
+SELECT ?teamLabel ?venueLabel ?lat ?lon ?stateAbbr ?stateFips WHERE {
+  ?team wdt:P118 wd:Q155223 ;
+        wdt:P31 wd:Q13393265 ;
+        p:P115 ?venueStatement .
+  FILTER NOT EXISTS { ?team wdt:P576 [] }
+  ?venueStatement ps:P115 ?venue .
+  FILTER NOT EXISTS { ?venueStatement pq:P582 [] }
+  ?venue p:P625/psv:P625 [ wikibase:geoLatitude ?lat ; wikibase:geoLongitude ?lon ] .
+  OPTIONAL {
+    ?venue wdt:P131+ ?state .
+    ?state wdt:P5087 ?stateFips ;
+           wdt:P5086 ?stateAbbr .
+  }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en,mul". }
+}
+ORDER BY ?teamLabel

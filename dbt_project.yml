@@ -5,6 +5,7 @@ profile: nba_playground
 model-paths: ["models"]
 macro-paths: ["macros"]
 test-paths: ["tests"]
+seed-paths: ["seeds"]
 
 vars:
   # staging で残すシーズンの開始年。全テーブル共通
@@ -18,3 +19,7 @@ models:
     intermediate:
       +materialized: view
       +schema: intermediate
+
+seeds:
+  nba_playground:
+    +schema: seeds
