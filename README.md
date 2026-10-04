@@ -71,6 +71,9 @@ models/staging/      raw スキーマのデータを整える（列名の統一�
 models/intermediate/ staging を組み合わせて、元データの欠けを補う
 macros/              シーズン・試合の種類を gameId から求めるマクロなど
 tests/               モデルの前提を確かめるテスト
+seeds/               本拠地アリーナの座標など、元データにない表（取得に使ったクエリも置く）
+charts/              dbt Charts のボード（グラフの種類ごとのディレクトリ）
+dbt_charts.yml       dbt Charts の設定（ボードが読む DuckDB のファイル）
 dbt_project.yml      dbt の設定（staging で残すシーズンの開始年など）
 profiles.yml         DuckDB への接続先（nba.duckdb）。リポジトリのルートで dbt を実行すると読まれる
 .sqlfluff            dbt lint の設定
@@ -85,14 +88,17 @@ profiles.yml         DuckDB への接続先（nba.duckdb）。リポジトリの
 - 期間: 既定で 2000-01 シーズン以降に絞る
   - `dbt_project.yml` の変数 `start_season_year` で変えられる
 - 注意点
-  - シュート位置の座標は、2019-20 シーズンの途中から入っている
+  - シュート位置の座標は、2019-20 シーズンから入っている。2019-20 は、2020 年 2〜3 月を中心に欠けている
   - オールスター・一部のプレシーズン・ごく一部のレギュラーシーズンの試合は、選手の成績やシュートにはあるが、試合の一覧（`stg_games`）にない
   - 選手の成績の所属チーム（`team_id`）は、元データで空の行がある。補ったものは `int_player_game_stats` にあるが、一部は補えず空のまま
 
 ## ライセンス
 
 - コード: [MIT License](LICENSE)
-- データ: このリポジトリには含めていない
-  - Kaggle のデータセットは [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) で公開されているが、元の統計データは NBA.com 由来
-  - 使うときは [NBA.com の利用規約](https://www.nba.com/termsofuse)も確認する
+- データ
+  - Kaggle のデータセット: このリポジトリには含めていない
+    - [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) で公開されているが、元の統計データは NBA.com 由来
+    - 使うときは [NBA.com の利用規約](https://www.nba.com/termsofuse)も確認する
+  - `seeds/nba_arenas.csv`: [Wikidata](https://www.wikidata.org/) から取得した（[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)）
+    - 取得日と変換の内容は `seeds/_seeds.yml` に書いている
 - このリポジトリは個人のサンプルで、NBA・NBA.com とは関係ない

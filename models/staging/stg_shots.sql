@@ -37,7 +37,7 @@ SELECT
     CASE WHEN shotDistance BETWEEN 0 AND 94 THEN shotDistance END AS shot_distance_ft,
     area,
     areaDetail AS area_detail,
-    -- コート上の位置。2019-20 シーズンの途中より前は null
+    -- コート上の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null
     x,
     y,
     description
