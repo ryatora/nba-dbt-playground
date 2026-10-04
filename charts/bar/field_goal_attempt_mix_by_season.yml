@@ -1,0 +1,45 @@
+queries:
+  field_goal_attempt_mix_by_season:
+    sql: |
+      WITH seasons AS (
+          SELECT
+              -- 「2000-01」〜「2011-12」は年月として読まれ、「2012-13」以降と混ざると描画が失敗するため、ハイフンを en dash に置き換える
+              REPLACE(season, '-', '–') AS season,
+              SUM(field_goals_attempted - three_pointers_attempted) AS two_point_attempts,
+              SUM(three_pointers_attempted) AS three_point_attempts
+          FROM {{ ref('stg_team_game_stats') }}
+          WHERE game_type = 'Regular Season'
+          GROUP BY season
+      )
+
+      SELECT
+          season,
+          '3P' AS shot_type,
+          three_point_attempts AS attempts,
+          1 AS shot_type_order
+      FROM seasons
+      UNION ALL
+      SELECT
+          season,
+          '2P' AS shot_type,
+          two_point_attempts AS attempts,
+          2 AS shot_type_order
+      FROM seasons
+      ORDER BY shot_type_order, season
+
+charts:
+  field_goal_attempt_mix:
+    query: field_goal_attempt_mix_by_season
+    type: bar
+    title: FG試投に占める2Pと3Pの割合
+    subtitle: レギュラーシーズン
+    x: season
+    y: attempts
+    color: shot_type
+    style:
+      orientation: vertical
+      stack: normalize
+      stack_order: data
+
+rows:
+  - field_goal_attempt_mix

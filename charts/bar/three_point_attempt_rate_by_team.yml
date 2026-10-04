@@ -1,0 +1,34 @@
+queries:
+  three_point_attempt_rate_by_team:
+    sql: |
+      SELECT
+          team_city || ' ' || team_name AS team,
+          SUM(three_pointers_attempted) / SUM(field_goals_attempted) AS three_point_attempt_rate
+      FROM {{ ref('stg_team_game_stats') }}
+      WHERE
+          season_start_year = 2025
+          AND game_type = 'Regular Season'
+          AND team_name IS NOT NULL
+      GROUP BY team
+      ORDER BY three_point_attempt_rate DESC
+      LIMIT 10
+
+charts:
+  three_point_attempt_rate:
+    query: three_point_attempt_rate_by_team
+    type: bar
+    title: チームごとのFG試投に占める3Pの割合
+    subtitle: 2025-26 レギュラーシーズン。上位10チーム
+    x: team
+    y: three_point_attempt_rate
+    style:
+      orientation: horizontal
+      number_format: ".0%"
+      marks:
+        bar:
+          labels:
+            visible: true
+            format: ".1%"
+
+rows:
+  - three_point_attempt_rate

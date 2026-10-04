@@ -1,0 +1,42 @@
+# 色はグラフではなく、ボードの style.charts.category_colors で、データの値ごとに指定する
+style:
+  charts:
+    category_colors:
+      home_away:
+        values:
+          ホーム: "#ED174C"
+          アウェイ: "#006BB6"
+
+queries:
+  points_by_home_away:
+    sql: |
+      SELECT
+          season,
+          CASE WHEN is_home THEN 'ホーム' ELSE 'アウェイ' END AS home_away,
+          AVG(points) AS avg_points
+      FROM {{ ref('stg_team_game_stats') }}
+      WHERE
+          season_start_year >= 2016
+          AND game_type = 'Regular Season'
+          AND team_name IS NOT NULL
+      GROUP BY season, is_home
+      ORDER BY is_home DESC, season
+
+charts:
+  points:
+    query: points_by_home_away
+    type: bar
+    title: ホームとアウェイの1試合平均得点
+    subtitle: 直近10シーズンのレギュラーシーズン
+    x: season
+    y: avg_points
+    color: home_away
+    style:
+      orientation: vertical
+      stack: none
+      # 凡例と棒を、ホーム→アウェイの順に並べる
+      legend:
+        values: [ホーム, アウェイ]
+
+rows:
+  - points

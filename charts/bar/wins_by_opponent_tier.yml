@@ -1,0 +1,78 @@
+queries:
+  wins_by_opponent_tier:
+    sql: |
+      WITH games AS (
+          SELECT
+              team_id,
+              team_city || ' ' || team_name AS team,
+              opponent_team_id,
+              game_date,
+              is_win,
+              season_wins
+          FROM {{ ref('stg_team_game_stats') }}
+          WHERE
+              season_start_year = 2025
+              AND game_type = 'Regular Season'
+              AND team_name IS NOT NULL
+      ),
+
+      -- season_wins はその試合を終えた時点の通算勝利数なので、最終戦の値がシーズンの勝利数になる
+      final_records AS (
+          SELECT
+              team_id,
+              season_wins
+          FROM games
+          QUALIFY ROW_NUMBER() OVER (PARTITION BY team_id ORDER BY game_date DESC) = 1
+      ),
+
+      tiers AS (
+          SELECT
+              team_id,
+              CASE
+                  WHEN RANK() OVER (ORDER BY season_wins DESC) <= 10 THEN 1
+                  WHEN RANK() OVER (ORDER BY season_wins DESC) <= 20 THEN 2
+                  ELSE 3
+              END AS tier_order
+          FROM final_records
+      )
+
+      SELECT
+          games.team,
+          CASE opponent_tiers.tier_order
+              WHEN 1 THEN '上位10チーム'
+              WHEN 2 THEN '中位10チーム'
+              ELSE '下位10チーム'
+          END AS opponent_tier,
+          COUNT_IF(games.is_win) AS wins
+      FROM games
+      INNER JOIN tiers AS team_tiers ON games.team_id = team_tiers.team_id
+      INNER JOIN tiers AS opponent_tiers ON games.opponent_team_id = opponent_tiers.team_id
+      -- 勝利数が上位10チームのチームだけを描く
+      WHERE team_tiers.tier_order = 1
+      GROUP BY games.team, opponent_tiers.tier_order
+      ORDER BY opponent_tiers.tier_order, games.team
+
+charts:
+  wins:
+    query: wins_by_opponent_tier
+    type: bar
+    title: 相手の強さ別の勝利数
+    subtitle: 2025-26 レギュラーシーズンの勝利数の上位10チーム。相手も勝利数の順位で10チームずつに分けた
+    x: team
+    y: wins
+    color: opponent_tier
+    sort:
+      by: wins
+      order: desc
+    style:
+      stack: zero
+      orientation: horizontal
+      stack_order: data
+      marks:
+        bar:
+          labels:
+            visible: true
+            position: middle
+
+rows:
+  - wins
