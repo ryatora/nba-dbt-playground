@@ -1,0 +1,46 @@
+queries:
+  points_and_threes:
+    sql: |
+      SELECT
+          season_start_year,
+          AVG(points) AS avg_points,
+          AVG(three_pointers_attempted) AS avg_three_pointers_attempted
+      FROM {{ ref('stg_team_game_stats') }}
+      WHERE
+          game_type = 'Regular Season'
+          AND team_name IS NOT NULL
+      GROUP BY season_start_year
+      ORDER BY season_start_year
+
+charts:
+  points_and_threes:
+    query: points_and_threes
+    type: bar
+    title: 1試合平均得点と3P試投数の推移
+    subtitle: レギュラーシーズン。1チームあたり。棒が得点（左の軸）、線が3P試投数（右の軸）。横軸はシーズンの開始年
+    x: season_start_year
+    y: avg_points
+    y_label: 1試合平均得点
+    # 左右で目盛りの違う2本の軸は誤読されやすいという警告。複合グラフの作例なので、承知のうえで消す
+    warnings_ignore: [WARN-DUAL-AXIS-COMPETING-SCALES]
+    style:
+      orientation: vertical
+      # 棒の色
+      color:
+        static: "#006BB6"
+    layers:
+      - type: line
+        y: avg_three_pointers_attempted
+        axis_y:
+          position: right
+          title: 3P試投数
+        label: 3P試投数
+        style:
+          marks:
+            line:
+              # 線の色。レイヤーの線の色は stroke の下に書く
+              stroke:
+                color: "#ED174C"
+
+rows:
+  - points_and_threes
