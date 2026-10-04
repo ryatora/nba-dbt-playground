@@ -1,0 +1,57 @@
+style:
+  charts:
+    category_colors:
+      metric:
+        values:
+          得点: "#006BB6"
+          失点: "#ED174C"
+
+queries:
+  sixers_points_trend:
+    sql: |
+      WITH seasons AS (
+          SELECT
+              season_start_year,
+              AVG(points) AS avg_points,
+              AVG(opponent_points) AS avg_opponent_points
+          FROM {{ ref('stg_team_game_stats') }}
+          WHERE
+              game_type = 'Regular Season'
+              AND team_name = '76ers'
+          GROUP BY season_start_year
+      )
+
+      SELECT
+          season_start_year,
+          '得点' AS metric,
+          avg_points AS value
+      FROM seasons
+      UNION ALL
+      SELECT
+          season_start_year,
+          '失点' AS metric,
+          avg_opponent_points AS value
+      FROM seasons
+      ORDER BY season_start_year, metric
+
+charts:
+  sixers_points:
+    query: sixers_points_trend
+    type: line
+    title: 76ersの1試合平均得点と失点の推移
+    subtitle: レギュラーシーズン。横軸はシーズンの開始年
+    x: season_start_year
+    y: value
+    color: metric
+    style:
+      # 線の右端の系列名は category_colors の色にならないので、凡例で示す
+      endpoint_labels:
+        visible: false
+      legend:
+        visible: true
+        title:
+          visible: false
+        values: [得点, 失点]
+
+rows:
+  - sixers_points

@@ -1,0 +1,30 @@
+queries:
+  atlantic_three_point_rate:
+    sql: |
+      SELECT
+          season,
+          team_name AS team,
+          SUM(three_pointers_attempted) / SUM(field_goals_attempted) AS three_point_attempt_rate
+      FROM {{ ref('stg_team_game_stats') }}
+      WHERE
+          season_start_year IN (2015, 2025)
+          AND game_type = 'Regular Season'
+          -- アトランティック・ディビジョンの5チーム
+          AND team_name IN ('76ers', 'Celtics', 'Knicks', 'Nets', 'Raptors')
+      GROUP BY season, team_name
+      ORDER BY season, team_name
+
+charts:
+  three_point_attempt_rate:
+    query: atlantic_three_point_rate
+    type: line
+    title: FG試投に占める3Pの割合の変化
+    subtitle: アトランティック・ディビジョンの5チーム。レギュラーシーズン
+    x: season
+    y: three_point_attempt_rate
+    color: team
+    style:
+      number_format: ".0%"
+
+rows:
+  - three_point_attempt_rate
