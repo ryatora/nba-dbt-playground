@@ -1,0 +1,28 @@
+queries:
+  teams_by_state:
+    sql: |
+      SELECT
+          state_fips,
+          COUNT(*) AS team_count
+      FROM {{ ref('nba_arenas') }}
+      -- 米国外のトロントは除く
+      WHERE state_fips IS NOT NULL
+      GROUP BY state_fips
+
+charts:
+  teams_by_state:
+    query: teams_by_state
+    type: map
+    title: 州ごとのNBAチームの数
+    subtitle: 本拠地アリーナの所在地。トロントを除く29チーム
+    geo:
+      source: us-states
+    lookup: state_fips
+    value: team_count
+    style:
+      legend:
+        title:
+          visible: false
+
+rows:
+  - teams_by_state

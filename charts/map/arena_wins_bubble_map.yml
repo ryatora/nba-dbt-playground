@@ -1,0 +1,37 @@
+queries:
+  arena_wins:
+    sql: |
+      WITH wins AS (
+          SELECT
+              team_name,
+              COUNT_IF(is_win) AS wins
+          FROM {{ ref('stg_team_game_stats') }}
+          WHERE
+              season_start_year = 2025
+              AND game_type = 'Regular Season'
+              AND team_name IS NOT NULL
+          GROUP BY team_name
+      )
+
+      SELECT
+          arenas.team,
+          arenas.latitude,
+          arenas.longitude,
+          wins.wins
+      FROM {{ ref('nba_arenas') }} AS arenas
+      INNER JOIN wins ON arenas.team_name = wins.team_name
+
+charts:
+  arena_wins:
+    query: arena_wins
+    type: bubble_map
+    title: 本拠地アリーナと勝利数
+    subtitle: 2025-26 レギュラーシーズン。点の大きさが勝利数
+    latitude: latitude
+    longitude: longitude
+    size: wins
+    basemap:
+      source: us-states
+
+rows:
+  - arena_wins
