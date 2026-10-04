@@ -1,7 +1,6 @@
 # nba-dbt-playground
 
 NBA のデータを使った dbt のサンプルプロジェクトです。
-Zenn の記事で使うコードを置いています。
 
 - データの変換: [dbt](https://docs.getdbt.com/) v2（PyPI の `dbt` パッケージ）
 - データベース: [DuckDB](https://duckdb.org/)（ローカルのファイル）
