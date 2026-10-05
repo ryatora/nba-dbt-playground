@@ -1,0 +1,43 @@
+queries:
+  sixers_points_mix:
+    sql: |
+      WITH games AS (
+          SELECT
+              field_goals_made,
+              three_pointers_made,
+              free_throws_made
+          FROM {{ ref('stg_team_game_stats') }}
+          WHERE
+              season_start_year = 2025
+              AND game_type = 'Regular Season'
+              AND team_name = '76ers'
+      )
+
+      SELECT
+          '2P' AS shot_type,
+          SUM(2 * (field_goals_made - three_pointers_made)) AS points
+      FROM games
+      UNION ALL
+      SELECT
+          '3P' AS shot_type,
+          SUM(3 * three_pointers_made) AS points
+      FROM games
+      UNION ALL
+      SELECT
+          'FT' AS shot_type,
+          SUM(free_throws_made) AS points
+      FROM games
+
+charts:
+  sixers_points_mix:
+    query: sixers_points_mix
+    type: donut
+    title: 76ersの得点の内訳
+    subtitle: 2025-26 レギュラーシーズン
+    theta: points
+    color: shot_type
+    total:
+      label: 総得点
+
+rows:
+  - sixers_points_mix

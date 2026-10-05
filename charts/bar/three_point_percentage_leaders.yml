@@ -1,0 +1,41 @@
+queries:
+  three_point_percentage_leaders:
+    sql: |
+      SELECT
+          player_name,
+          SUM(three_pointers_made) / SUM(three_pointers_attempted) AS three_point_percentage
+      FROM {{ ref('stg_player_game_stats') }}
+      WHERE
+          season_start_year = 2025
+          AND game_type = 'Regular Season'
+      GROUP BY player_id, player_name
+      -- 試投数の少ない選手を除くための下限
+      HAVING SUM(three_pointers_attempted) >= 300
+      ORDER BY three_point_percentage DESC
+      LIMIT 10
+
+charts:
+  three_point_percentage:
+    query: three_point_percentage_leaders
+    type: bar
+    title: 3P成功率のトップ10
+    subtitle: 2025-26 レギュラーシーズン。3P試投300本以上の選手
+    x: player_name
+    y: three_point_percentage
+    style:
+      orientation: horizontal
+      number_format: ".0%"
+      # layers の点の系列が凡例に出るため隠す
+      legend:
+        visible: false
+      marks:
+        bar:
+          # 棒を細くして、ロリポップの棒の部分にする
+          band_width: 0.05
+    layers:
+      # 棒の先端に点を重ねる
+      - type: scatter
+        y: three_point_percentage
+
+rows:
+  - three_point_percentage

@@ -1,0 +1,62 @@
+# 線の色を各チームのチームカラーにする
+style:
+  charts:
+    category_colors:
+      team:
+        values:
+          Celtics: "#007A33"
+          Knicks: "#F58426"
+          Raptors: "#CE1141"
+          Nets: "#000000"
+          76ers: "#006BB6"
+
+queries:
+  atlantic_rank:
+    sql: |
+      WITH wins AS (
+          SELECT
+              season,
+              team_name AS team,
+              COUNT_IF(is_win) AS wins
+          FROM {{ ref('stg_team_game_stats') }}
+          WHERE
+              season_start_year >= 2016
+              AND game_type = 'Regular Season'
+              -- アトランティック・ディビジョンの5チーム
+              AND team_name IN ('76ers', 'Celtics', 'Knicks', 'Nets', 'Raptors')
+          GROUP BY season, team_name
+      )
+
+      SELECT
+          season,
+          team,
+          RANK() OVER (PARTITION BY season ORDER BY wins DESC) AS division_rank
+      FROM wins
+      ORDER BY season, team
+
+charts:
+  division_rank:
+    query: atlantic_rank
+    type: line
+    title: アトランティック・ディビジョンの順位の推移
+    subtitle: レギュラーシーズンの勝利数の順位。2016-17〜2025-26シーズン
+    x: season
+    y: division_rank
+    color: team
+    style:
+      # 線の右端のチーム名は category_colors の色にならないので、凡例で示す
+      endpoint_labels:
+        visible: false
+      legend:
+        visible: true
+        title:
+          visible: false
+        # 2025-26 シーズンの順位の順
+        values: [Celtics, Knicks, Raptors, 76ers, Nets]
+      axis_y:
+        scale:
+          continuous:
+            domain: [5, 1]
+
+rows:
+  - division_rank

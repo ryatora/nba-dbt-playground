@@ -1,0 +1,48 @@
+queries:
+  atlantic_standings:
+    sql: |
+      SELECT
+          team_city || ' ' || team_name AS team,
+          COUNT_IF(is_win) AS wins,
+          COUNT_IF(NOT is_win) AS losses,
+          AVG(CAST(is_win AS INTEGER)) AS win_pct,
+          AVG(points) AS avg_points,
+          AVG(opponent_points) AS avg_opponent_points
+      FROM {{ ref('stg_team_game_stats') }}
+      WHERE
+          season_start_year = 2025
+          AND game_type = 'Regular Season'
+          -- アトランティック・ディビジョンの5チーム
+          AND team_name IN ('76ers', 'Celtics', 'Knicks', 'Nets', 'Raptors')
+      GROUP BY team
+      ORDER BY win_pct DESC
+
+charts:
+  atlantic_standings:
+    query: atlantic_standings
+    type: table
+    title: アトランティック・ディビジョンの成績
+    subtitle: 2025-26 レギュラーシーズン
+    style:
+      columns:
+        team:
+          label: チーム
+        wins:
+          label: 勝ち数
+        losses:
+          label: 負け数
+        win_pct:
+          label: 勝率
+          format: ",.3f"
+          scale:
+            background:
+              palette: dbt-seq-blue
+        avg_points:
+          label: 平均得点
+          format: ",.1f"
+        avg_opponent_points:
+          label: 平均失点
+          format: ",.1f"
+
+rows:
+  - atlantic_standings

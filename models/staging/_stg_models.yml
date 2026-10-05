@@ -272,6 +272,6 @@ models:
       - name: area
         description: "シュートしたエリア（例: Restricted Area、Left Corner 3）。2021-22 シーズンまでは null。"
       - name: x
-        description: コート上の横方向の位置。2019-20 シーズンの途中より前は null。
+        description: コート上の横方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
       - name: y
-        description: コート上の縦方向の位置。2019-20 シーズンの途中より前は null。
+        description: コート上の縦方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。

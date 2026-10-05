@@ -1,0 +1,61 @@
+style:
+  charts:
+    category_colors:
+      result:
+        values:
+          成功: "#ED174C"
+          失敗: "#B0B0B0"
+
+queries:
+  edgecombe_shots:
+    sql: |
+      WITH shots AS (
+          SELECT
+              is_made,
+              -- コートの両側のシュートが混ざっているので、x が 50 を超えるものを反転して片側にそろえる
+              CASE WHEN x > 50 THEN 100 - x ELSE x END AS length_pct,
+              CASE WHEN x > 50 THEN 100 - y ELSE y END AS width_pct
+          FROM {{ ref('stg_shots') }}
+          WHERE
+              season_start_year = 2025
+              AND game_type = 'Regular Season'
+              AND player_name = 'VJ Edgecombe'
+              AND x IS NOT NULL
+      )
+
+      -- 座標はコートの長さ（94ft）と幅（50ft）に対する割合なので、ftに直す
+      SELECT
+          CASE WHEN is_made THEN '成功' ELSE '失敗' END AS result,
+          width_pct * 0.5 AS court_x_ft,
+          length_pct * 0.94 AS court_y_ft
+      FROM shots
+
+charts:
+  shots:
+    query: edgecombe_shots
+    type: scatter
+    title: VJ Edgecombe（76ers）のシュート位置
+    subtitle: 2025-26 レギュラーシーズン。ゴールは下側
+    x: court_x_ft
+    y: court_y_ft
+    color: result
+    # コートの幅 50ft とベースラインからの距離 47ft の比に近づける
+    height: 530
+    x_label: コートの幅（ft）
+    y_label: ベースラインからの距離（ft）
+    style:
+      legend:
+        title:
+          visible: false
+        values: [成功, 失敗]
+      axis_x:
+        scale:
+          continuous:
+            domain: [0, 50]
+      axis_y:
+        scale:
+          continuous:
+            domain: [0, 47]
+
+rows:
+  - shots

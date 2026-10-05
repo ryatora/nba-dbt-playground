@@ -1,0 +1,34 @@
+# dct 0.9.1 では、scatter に size を指定すると点の半径が1px以下に固定され、大きさの違いが見えない（不具合と判断）
+# size の値を変えても点の大きさはほとんど変わらない
+
+queries:
+  points_vs_assists:
+    sql: |
+      SELECT
+          player_name,
+          AVG(points) AS avg_points,
+          AVG(assists) AS avg_assists,
+          AVG(minutes) AS avg_minutes
+      FROM {{ ref('stg_player_game_stats') }}
+      WHERE
+          season_start_year = 2025
+          AND game_type = 'Regular Season'
+          AND minutes > 0
+      GROUP BY player_id, player_name
+      -- 出場試合の少ない選手を除くための下限
+      HAVING COUNT(*) >= 50
+
+charts:
+  points_vs_assists:
+    query: points_vs_assists
+    type: scatter
+    title: 選手ごとの1試合平均得点とアシスト
+    subtitle: 2025-26 レギュラーシーズン。50試合以上に出場した選手。点の大きさは平均出場時間
+    x: avg_points
+    y: avg_assists
+    size: avg_minutes
+    x_label: 1試合平均得点
+    y_label: 1試合平均アシスト
+
+rows:
+  - points_vs_assists

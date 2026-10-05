@@ -1,0 +1,37 @@
+queries:
+  three_point_rate_vs_win_pct:
+    sql: |
+      SELECT
+          team_city || ' ' || team_name AS team,
+          SUM(three_pointers_attempted) / SUM(field_goals_attempted) AS three_point_attempt_rate,
+          AVG(CAST(is_win AS INTEGER)) AS win_pct
+      FROM {{ ref('stg_team_game_stats') }}
+      WHERE
+          season_start_year = 2025
+          AND game_type = 'Regular Season'
+          AND team_name IS NOT NULL
+      GROUP BY team
+
+charts:
+  three_point_rate_vs_win_pct:
+    query: three_point_rate_vs_win_pct
+    type: scatter
+    title: FG試投に占める3Pの割合と勝率
+    subtitle: 2025-26 レギュラーシーズン。1点が1チーム
+    x: three_point_attempt_rate
+    y: win_pct
+    x_label: FG試投に占める3Pの割合
+    y_label: 勝率
+    style:
+      axis_x:
+        labels:
+          format: ".0%"
+        scale:
+          continuous:
+            zero: false
+      axis_y:
+        labels:
+          format: ".0%"
+
+rows:
+  - three_point_rate_vs_win_pct

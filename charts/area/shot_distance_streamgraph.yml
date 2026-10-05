@@ -1,0 +1,58 @@
+queries:
+  shot_distance_trend:
+    sql: |
+      WITH shots AS (
+          SELECT
+              season_start_year,
+              game_id,
+              CASE
+                  WHEN shot_value = 3 THEN '3Pラインより外'
+                  WHEN shot_distance_ft < 4 THEN '4ft未満'
+                  WHEN shot_distance_ft < 10 THEN '4〜10ft未満'
+                  WHEN shot_distance_ft < 16 THEN '10〜16ft未満'
+                  ELSE '16ft〜3Pライン'
+              END AS distance_band,
+              CASE
+                  WHEN shot_value = 3 THEN 5
+                  WHEN shot_distance_ft < 4 THEN 1
+                  WHEN shot_distance_ft < 10 THEN 2
+                  WHEN shot_distance_ft < 16 THEN 3
+                  ELSE 4
+              END AS distance_band_order
+          FROM {{ ref('stg_shots') }}
+          WHERE game_type = 'Regular Season'
+      ),
+
+      games AS (
+          SELECT
+              season_start_year,
+              COUNT(DISTINCT game_id) AS game_count
+          FROM shots
+          GROUP BY season_start_year
+      )
+
+      -- シーズンごとに試合数が違う（短縮シーズン・記録の欠け）ので、合計ではなく1試合あたりの本数にする
+      SELECT
+          shots.season_start_year,
+          shots.distance_band,
+          COUNT(*) / MIN(games.game_count) AS shots_per_game
+      FROM shots
+      INNER JOIN games ON shots.season_start_year = games.season_start_year
+      GROUP BY shots.season_start_year, shots.distance_band
+      ORDER BY MIN(shots.distance_band_order), shots.season_start_year
+
+charts:
+  shot_distance:
+    query: shot_distance_trend
+    type: area
+    title: シュートの距離別の本数の推移
+    subtitle: レギュラーシーズン。1試合（両チーム合計）あたり。横軸はシーズンの開始年
+    x: season_start_year
+    y: shots_per_game
+    color: distance_band
+    style:
+      stack: center
+      stack_order: data
+
+rows:
+  - shot_distance

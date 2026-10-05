@@ -1,0 +1,43 @@
+queries:
+  points_per_shot_by_area:
+    sql: |
+      WITH shots AS (
+          SELECT
+              area,
+              -- ゴールに近い順に並べるための番号
+              CASE area
+                  WHEN 'Restricted Area' THEN 1
+                  WHEN 'In The Paint (Non-RA)' THEN 2
+                  WHEN 'Mid-Range' THEN 3
+                  WHEN 'Left Corner 3' THEN 4
+                  WHEN 'Right Corner 3' THEN 5
+                  WHEN 'Above the Break 3' THEN 6
+              END AS area_order,
+              CASE WHEN is_made THEN shot_value ELSE 0 END AS points
+          FROM {{ ref('stg_shots') }}
+          WHERE
+              season_start_year = 2025
+              AND game_type = 'Regular Season'
+              AND area IS NOT NULL
+      )
+
+      SELECT
+          area,
+          AVG(points) AS points_per_shot
+      FROM shots
+      GROUP BY area
+      ORDER BY MIN(area_order)
+
+charts:
+  points_per_shot:
+    query: points_per_shot_by_area
+    type: bar
+    title: エリア別のシュート1本あたりの得点
+    subtitle: 2025-26 レギュラーシーズン
+    x: area
+    y: points_per_shot
+    style:
+      orientation: vertical
+
+rows:
+  - points_per_shot

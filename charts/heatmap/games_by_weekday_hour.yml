@@ -1,0 +1,50 @@
+queries:
+  games_by_weekday_hour:
+    sql: |
+      WITH games AS (
+          SELECT
+              -- ISODOW は月曜が1、日曜が7
+              ISODOW(game_started_at_est) AS weekday_number,
+              HOUR(game_started_at_est) AS start_hour_number
+          FROM {{ ref('stg_games') }}
+          WHERE
+              season_start_year = 2025
+              AND game_type = 'Regular Season'
+      ),
+
+      -- 試合のない組み合わせも0として並べる。軸の並び順は、行が最初に出てくる順になるため
+      grid AS (
+          SELECT
+              weekdays.weekday_number,
+              hours.start_hour_number
+          FROM (SELECT DISTINCT weekday_number FROM games) AS weekdays
+          CROSS JOIN (SELECT DISTINCT start_hour_number FROM games) AS hours
+      )
+
+      SELECT
+          ['月', '火', '水', '木', '金', '土', '日'][grid.weekday_number] AS weekday,
+          grid.start_hour_number || '時' AS start_hour,
+          COUNT(games.weekday_number) AS game_count
+      FROM grid
+      LEFT JOIN games
+          ON grid.weekday_number = games.weekday_number
+          AND grid.start_hour_number = games.start_hour_number
+      GROUP BY grid.weekday_number, grid.start_hour_number
+      ORDER BY grid.weekday_number, grid.start_hour_number
+
+charts:
+  games_by_weekday_hour:
+    query: games_by_weekday_hour
+    type: heatmap
+    title: 曜日と開始時刻ごとの試合数
+    subtitle: 2025-26 レギュラーシーズン。開始時刻は米国東部時間
+    x: start_hour
+    y: weekday
+    color: game_count
+    style:
+      legend:
+        title:
+          visible: false
+
+rows:
+  - games_by_weekday_hour

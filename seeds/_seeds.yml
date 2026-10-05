@@ -1,0 +1,39 @@
+seeds:
+  - name: nba_arenas
+    description: >
+      NBA の現在の30チームの本拠地アリーナと座標、所在地の州。
+      Wikidata（CC0）から seeds/nba_arenas.rq のクエリで取得し（2026-10-04）、次のように変換した。
+      列名を付け直す、座標を小数第6位で丸める、州の FIPS コードを数値にする（"06" → 6）、
+      データと結合するための team_name を足す。
+      Los Angeles Clippers は、Wikidata の本拠地が Crypto.com Arena のまま更新されていないため、
+      2024-25 シーズンからの本拠地の Intuit Dome（Wikidata の Q54958436 の座標）に手で直した。
+    config:
+      column_types:
+        state_fips: integer
+    columns:
+      - name: team
+        description: Wikidata のチーム名。
+        data_tests:
+          - not_null
+          - unique
+      - name: team_name
+        description: チーム名から都市名を除いた部分。stg_team_game_stats.team_name と一致する。
+        data_tests:
+          - not_null
+          - unique
+      - name: arena
+        description: 本拠地アリーナの名前。
+        data_tests:
+          - not_null
+      - name: latitude
+        description: アリーナの緯度。
+        data_tests:
+          - not_null
+      - name: longitude
+        description: アリーナの経度。
+        data_tests:
+          - not_null
+      - name: state_abbr
+        description: 所在地の州の略称。米国外のトロントは空。
+      - name: state_fips
+        description: 所在地の州の FIPS コード（数値）。地図の us-states と照合できる。米国外のトロントは空。
