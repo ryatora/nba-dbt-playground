@@ -131,6 +131,10 @@ models:
       チームの移転・改名の履歴。粒度: 1 チームの 1 つの名称の期間につき 1 行（同じ team_id に複数行ある）。
       NBA・BAA に属したことのないチーム（EuroLeague など）も含むが、これらは試合のデータには出てこない。
       シーズンでは絞らない。
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [team_id, first_season_start_year]
     columns:
       - name: team_id
         description: '{{ doc("team_id") }}'
@@ -156,6 +160,14 @@ models:
       チームの試合ごとのボックススコア。粒度: 1 試合 × 1 チームにつき 1 行（game_id × team_id）。
       クォーターごとの得点・ベンチの得点などの詳細な列は、プレシーズンの大半の試合と一部の試合で null。
       {{ doc("start_season_year_filter") }}
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [game_id, team_id]
+      # int_player_game_stats の照合に使うキー。一意でないと、照合で行が増える
+      - unique_combination:
+          arguments:
+            columns: [game_id, team_city, team_name]
     columns:
       - name: game_id
         description: '{{ doc("game_id") }}'
@@ -284,6 +296,10 @@ models:
       選手の試合ごとのボックススコア。粒度: 1 試合 × 1 選手につき 1 行（game_id × player_id）。
       ベンチ入りして出場しなかった試合の行も含む。元データに混ざっているチーム合計の行（personId が null）は除く。
       {{ doc("start_season_year_filter") }}
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [game_id, player_id]
     columns:
       - name: game_id
         description: >
@@ -393,6 +409,10 @@ models:
       シュートの記録。粒度: 1 シュート 1 行（game_id × action_number）。
       Play-by-Play のうちフィールドゴールの試投で、フリースローは含まない。
       {{ doc("start_season_year_filter") }}
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [game_id, action_number]
     columns:
       - name: game_id
         description: >

@@ -2,11 +2,13 @@
 
 事前に Kaggle CLI の認証を設定しておくこと（手順は AUTH_DOC_URL）。
 取得済みのファイルは飛ばす。取り直すときは --force を付ける。
+一時ディレクトリに取得してから data/raw/ に移すため、途中で失敗しても不完全なファイルは data/raw/ に残らない。
 """
 
 import argparse
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 DATASET = "eoinamoore/historical-nba-data-and-player-box-scores"
@@ -34,20 +36,27 @@ def main() -> None:
             print(f"skip {file_name} (already exists)")
             continue
         print(f"downloading {file_name} ...")
-        # PATH に依存しないよう、このスクリプトを動かしている Python の kaggle を使う
-        result = subprocess.run(
-            [
-                sys.executable, "-m", "kaggle", "datasets", "download", DATASET,
-                "--file", file_name,
-                "--path", str(RAW_DIR),
-                "--unzip",
-            ],
-        )
-        if result.returncode != 0:
-            sys.exit(
-                f"failed to download {file_name} (see the error above). "
-                f"If it is an authentication error, see: {AUTH_DOC_URL}"
+        # 移すときに同じファイルシステム内の名前の変更で済むよう、一時ディレクトリは data/raw/ の中に作る
+        with tempfile.TemporaryDirectory(dir=RAW_DIR, prefix=".download-") as tmp_dir:
+            # PATH に依存しないよう、このスクリプトを動かしている Python の kaggle を使う
+            result = subprocess.run(
+                [
+                    sys.executable, "-m", "kaggle", "datasets", "download", DATASET,
+                    "--file", file_name,
+                    "--path", tmp_dir,
+                    "--unzip",
+                ],
             )
+            if result.returncode != 0:
+                sys.exit(
+                    f"failed to download {file_name} (see the error above). "
+                    f"If it is an authentication error, see: {AUTH_DOC_URL}"
+                )
+            # kaggle の終了コードだけに頼らず、移す前にファイルがあることも確かめる
+            downloaded = Path(tmp_dir) / file_name
+            if not downloaded.exists():
+                sys.exit(f"{file_name} was not found in the downloaded files (see the output above)")
+            downloaded.replace(RAW_DIR / file_name)
 
 
 if __name__ == "__main__":

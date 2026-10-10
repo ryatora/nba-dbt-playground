@@ -3,6 +3,10 @@ models:
     description: >
       stg_player_game_stats の所属チームを補ったもの。粒度: 1 試合 × 1 選手につき 1 行（game_id × player_id）。
       列は stg_player_game_stats と同じで、team_id・opponent_team_id の値だけが異なる。その他の列の説明は stg_player_game_stats を参照。
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [game_id, player_id]
     columns:
       - name: game_id
         description: '{{ doc("game_id") }}'

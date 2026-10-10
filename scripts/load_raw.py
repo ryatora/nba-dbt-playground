@@ -1,6 +1,8 @@
 """data/raw/ のファイルを DuckDB (nba.duckdb) の raw スキーマに読み込む。
 
 先に scripts/download_data.py でデータを取得しておくこと。
+テーブルは 1 つずつ消してから作り直すため、途中で失敗すると、失敗したテーブルは raw スキーマからなくなる。
+その場合は、原因を直してからもう一度実行する。
 """
 
 from pathlib import Path
@@ -48,7 +50,7 @@ def main() -> None:
             con.execute(f"DROP TABLE IF EXISTS raw.{table}")
             con.execute("CHECKPOINT")
             con.execute(f"CREATE TABLE raw.{table} AS SELECT * FROM {query}")
-            count = con.execute(f"SELECT COUNT(*) FROM raw.{table}").fetchall()[0][0]
+            count = con.execute(f"SELECT COUNT(*) FROM raw.{table}").fetchone()[0]
             print(f"raw.{table}: {count:,} rows")
 
 
