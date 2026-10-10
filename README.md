@@ -71,10 +71,14 @@ dct serve                    # 表示された URL をブラウザで開く
 flowchart LR
     kaggle["Kaggle<br>NBA データセット"] -->|download_data.py| raw_files["data/raw/<br>CSV・Parquet"]
     raw_files -->|load_raw.py| raw_schema
+    seed_files["seeds/<br>CSV"] -->|dbt build| seeds_schema
     subgraph duckdb["nba.duckdb"]
         raw_schema["raw<br>スキーマ"] -->|dbt build| staging["staging<br>スキーマ"]
         staging -->|dbt build| intermediate["intermediate<br>スキーマ"]
+        seeds_schema["seeds<br>スキーマ"]
     end
+    staging -->|dct serve| charts["charts/<br>ボード"]
+    seeds_schema -->|dct serve| charts
 ```
 
 ## ディレクトリ構成
