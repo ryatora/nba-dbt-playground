@@ -72,7 +72,7 @@ models/intermediate/ staging を組み合わせて、元データの欠けを補
 macros/              シーズン・試合の種類を gameId から求めるマクロなど
 tests/               モデルの前提を確かめるテスト
 seeds/               本拠地アリーナの座標など、元データにない表（取得に使ったクエリも置く）
-charts/              dbt Charts のボード（グラフの種類ごとのディレクトリ）
+charts/              dbt Charts のボード（グラフの種類ごとのディレクトリ。exposures は models/_exposures.yml）
 dbt_charts.yml       dbt Charts の設定（ボードが読む DuckDB のファイル）
 dbt_project.yml      dbt の設定（staging で残すシーズンの開始年など）
 profiles.yml         DuckDB への接続先（nba.duckdb）。リポジトリのルートで dbt を実行すると読まれる
