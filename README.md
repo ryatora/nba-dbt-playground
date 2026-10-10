@@ -77,8 +77,7 @@ flowchart LR
         staging -->|dbt build| intermediate["intermediate<br>スキーマ"]
         seeds_schema["seeds<br>スキーマ"]
     end
-    staging -->|dct serve| charts["charts/<br>ボード"]
-    seeds_schema -->|dct serve| charts
+    duckdb -->|dct serve| charts["charts/<br>ボード"]
 ```
 
 ## ディレクトリ構成
