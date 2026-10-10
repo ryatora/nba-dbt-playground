@@ -27,6 +27,8 @@ uv run dbt build                         # seeds/ の CSV の読み込みと、�
 - dbt と後述の dct は、リポジトリのルートで実行する。
   - `profiles.yml` と `dbt_charts.yml` に書いた `nba.duckdb` が相対パスのため。
   - 別の場所（git worktree など）で実行すると、dbt はその場所に空の `nba.duckdb` を作り、dct は接続に失敗する。
+- `dbt build` などで `Skipping semantic manifest validation` の警告（dbt1005）が出る。
+  - `team_games` に定義した Semantic Layer（semantic model と metric）の検証には dbt platform の設定（`dbt_cloud.yml`）が要り、ないと検証を飛ばすため。モデルの作成とテストには影響しない。
 
 ### SQL の書式を確認する
 
