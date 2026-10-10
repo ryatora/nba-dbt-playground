@@ -7,7 +7,7 @@ queries:
           SELECT
               season_start_year,
               AVG(points) AS avg_points
-          FROM {{ ref('stg_team_game_stats') }}
+          FROM {{ ref('team_games') }}
           WHERE
               season_start_year IN (2024, 2025)
               AND game_type = 'Regular Season'

@@ -17,12 +17,20 @@ models:
   nba_playground:
     # group は models/_groups.yml で定義している
     +group: nba
+    # staging と intermediate は private にし、同じ group のモデルからだけ参照できるようにする
+    # exposures は group に属さないため、private のモデルを参照できない
+    # dbt Charts のグラフは exposures に登録しているので、marts を読む
     staging:
+      +access: private
       +materialized: view
       +schema: staging
     intermediate:
+      +access: private
       +materialized: view
       +schema: intermediate
+    marts:
+      +materialized: view
+      +schema: marts
 
 seeds:
   nba_playground:

@@ -75,6 +75,8 @@ flowchart LR
     subgraph duckdb["nba.duckdb"]
         raw_schema["raw<br>スキーマ"] -->|dbt build| staging["staging<br>スキーマ"]
         staging -->|dbt build| intermediate["intermediate<br>スキーマ"]
+        staging -->|dbt build| marts["marts<br>スキーマ"]
+        intermediate -->|dbt build| marts
         seeds_schema["seeds<br>スキーマ"]
     end
     duckdb -->|dct serve| charts["charts/<br>ボード"]
@@ -88,6 +90,7 @@ scripts/
   load_raw.py        data/raw/ のファイルを nba.duckdb の raw スキーマに読み込む
 models/staging/      raw スキーマのデータを整える（列名の統一、シーズンや試合の種類の付与、期間の絞り込み）
 models/intermediate/ staging を組み合わせて、元データの欠けを補う
+models/marts/        dbt Charts のグラフなど、利用者が読むモデル
 macros/              シーズン・試合の種類を gameId から求めるマクロなど
 tests/               モデルの前提を確かめるテスト
 seeds/               本拠地アリーナの座標など、元データにない表（取得に使ったクエリも置く）
@@ -108,8 +111,8 @@ profiles.yml         DuckDB への接続先（nba.duckdb）。リポジトリの
   - `dbt_project.yml` の変数 `start_season_year` で変えられる。
 - 注意点
   - シュート位置の座標は、2019-20 シーズンから入っている。2019-20 は、2020 年 2〜3 月を中心に欠けている。
-  - オールスター・一部のプレシーズン・ごく一部のレギュラーシーズンの試合は、選手の成績やシュートにはあるが、試合の一覧（`stg_games`）にない。
-  - 選手の成績の所属チーム（`team_id`）は、元データで空の行がある。補ったものは `int_player_game_stats` にあるが、一部は補えず空のまま。
+  - オールスター・一部のプレシーズン・ごく一部のレギュラーシーズンの試合は、選手の成績やシュートにはあるが、試合の一覧（`games`）にない。
+  - 選手の成績の所属チーム（`team_id`）は、元データで空の行がある。補ったものは `player_games` にあるが、一部は補えず空のまま。
 - 確かめた範囲: 上の注意点とモデルの説明は、2025-26 シーズンのファイナル（2026-06-13）までのデータで確かめた。
   - `download_data.py` は実行した時点の最新版を取得するため、それより後の試合が入ると説明と合わないことがある。
 

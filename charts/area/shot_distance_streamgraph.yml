@@ -19,7 +19,7 @@ queries:
                   WHEN shot_distance_ft < 16 THEN 3
                   ELSE 4
               END AS distance_band_order
-          FROM {{ ref('stg_shots') }}
+          FROM {{ ref('shots') }}
           WHERE game_type = 'Regular Season'
       ),
 

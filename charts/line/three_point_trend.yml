@@ -4,7 +4,7 @@ queries:
       SELECT
           season_start_year,
           AVG(three_pointers_attempted) AS avg_three_pointers_attempted
-      FROM {{ ref('stg_team_game_stats') }}
+      FROM {{ ref('team_games') }}
       WHERE
           game_type = 'Regular Season'
           AND team_name IS NOT NULL

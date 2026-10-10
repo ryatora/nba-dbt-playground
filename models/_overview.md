@@ -12,6 +12,8 @@ NBA のデータを使った dbt のサンプルプロジェクト。データ�
 
 - staging: raw スキーマのテーブルごとに 1 モデル。列名の統一・型の変換、シーズンや試合の種類の付与、行の絞り込み（期間、`stg_shots` ではシュートの行だけ、など）を行う。結合はしない
 - intermediate: staging を結合して、元データの欠けを補う（`int_player_game_stats` の所属チーム）
+- marts: dbt Charts のグラフなど、利用者が読むモデル。利用者向けの加工が必要なときは、この層で行う
+  - staging と intermediate は access を private にしている。exposures は group に属さないため、private のモデルを参照できない。dbt Charts のグラフは exposures に登録しているので、marts を読む
 - seeds: 本拠地アリーナの座標など、元データにない小さな表（[Wikidata](https://www.wikidata.org/) から取得）
 
 データの注意点は、各モデルと列の説明に書いている。

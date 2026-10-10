@@ -7,7 +7,7 @@ queries:
           team_city || ' ' || team_name AS team,
           -- スパークバーの値には書式を指定できないので、% の数値にしておく
           ROUND(SUM(three_pointers_made) / SUM(three_pointers_attempted) * 100, 1) AS three_point_pct
-      FROM {{ ref('stg_team_game_stats') }}
+      FROM {{ ref('team_games') }}
       WHERE
           season_start_year = 2025
           AND game_type = 'Regular Season'

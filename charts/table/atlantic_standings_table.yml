@@ -8,7 +8,7 @@ queries:
           AVG(CAST(is_win AS INTEGER)) AS win_pct,
           AVG(points) AS avg_points,
           AVG(opponent_points) AS avg_opponent_points
-      FROM {{ ref('stg_team_game_stats') }}
+      FROM {{ ref('team_games') }}
       WHERE
           season_start_year = 2025
           AND game_type = 'Regular Season'

@@ -15,7 +15,7 @@ queries:
               -- コートの両側のシュートが混ざっているので、x が 50 を超えるものを反転して片側にそろえる
               CASE WHEN x > 50 THEN 100 - x ELSE x END AS length_pct,
               CASE WHEN x > 50 THEN 100 - y ELSE y END AS width_pct
-          FROM {{ ref('stg_shots') }}
+          FROM {{ ref('shots') }}
           WHERE
               season_start_year = 2025
               AND game_type = 'Regular Season'

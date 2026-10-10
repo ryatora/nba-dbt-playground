@@ -17,7 +17,7 @@ team_game_stats AS (
 
 -- 列は stg_player_game_stats と同じにしたいので、* replace で 2 列だけ置き換える
 SELECT
-    player_game_stats.* REPLACE (  -- noqa: AM04
+    player_game_stats.* REPLACE (
         COALESCE(player_game_stats.team_id, team_game_stats.team_id) AS team_id,
         COALESCE(player_game_stats.opponent_team_id, team_game_stats.opponent_team_id) AS opponent_team_id
     )

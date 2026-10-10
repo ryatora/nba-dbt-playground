@@ -14,7 +14,7 @@ queries:
           season,
           CASE WHEN is_home THEN 'ホーム' ELSE 'アウェイ' END AS home_away,
           AVG(points) AS avg_points
-      FROM {{ ref('stg_team_game_stats') }}
+      FROM {{ ref('team_games') }}
       WHERE
           season_start_year >= 2016
           AND game_type = 'Regular Season'
