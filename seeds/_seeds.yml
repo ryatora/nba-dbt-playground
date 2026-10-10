@@ -21,6 +21,10 @@ seeds:
         data_tests:
           - not_null
           - unique
+          - relationships:
+              arguments:
+                to: ref('stg_team_game_stats')
+                field: team_name
       - name: arena
         description: 本拠地アリーナの名前。
         data_tests:
