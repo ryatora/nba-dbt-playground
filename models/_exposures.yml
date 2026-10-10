@@ -1,0 +1,249 @@
+# charts/ の dbt Charts のボードを、モデルの下流の使われ方として登録する。ボード 1 本につき 1 つ。
+# name はボードのファイル名、label はグラフのタイトル（KPI のボードはグラフのラベル）、description はボードのパスとサブタイトル。
+# ボードを足したとき、クエリの ref() やグラフのタイトル・サブタイトルを変えたときは、ここも直す。
+# データを読まないボード（charts/callout/shot_coordinates_note.yml）は、依存するモデルがないため登録しない。
+exposures:
+  - name: points_mix_trend
+    label: "1試合平均得点の内訳の推移"
+    type: dashboard
+    description: "dbt Charts のボード（charts/area/points_mix_trend.yml）。レギュラーシーズン。1チームあたり。横軸はシーズンの開始年。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: shot_distance_streamgraph
+    label: "シュートの距離別の本数の推移"
+    type: dashboard
+    description: "dbt Charts のボード（charts/area/shot_distance_streamgraph.yml）。レギュラーシーズン。1試合（両チーム合計）あたり。横軸はシーズンの開始年。"
+    depends_on:
+      - ref('stg_shots')
+    owner:
+      name: nba-dbt-playground
+
+  - name: field_goal_attempt_mix_by_season
+    label: "FG試投に占める2Pと3Pの割合"
+    type: dashboard
+    description: "dbt Charts のボード（charts/bar/field_goal_attempt_mix_by_season.yml）。レギュラーシーズン。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: points_by_home_away
+    label: "ホームとアウェイの1試合平均得点"
+    type: dashboard
+    description: "dbt Charts のボード（charts/bar/points_by_home_away.yml）。直近10シーズンのレギュラーシーズン。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: points_per_shot_by_area
+    label: "エリア別のシュート1本あたりの得点"
+    type: dashboard
+    description: "dbt Charts のボード（charts/bar/points_per_shot_by_area.yml）。2025-26 レギュラーシーズン。"
+    depends_on:
+      - ref('stg_shots')
+    owner:
+      name: nba-dbt-playground
+
+  - name: three_point_attempt_rate_by_team
+    label: "チームごとのFG試投に占める3Pの割合"
+    type: dashboard
+    description: "dbt Charts のボード（charts/bar/three_point_attempt_rate_by_team.yml）。2025-26 レギュラーシーズン。上位10チーム。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: three_point_percentage_leaders
+    label: "3P成功率のトップ10"
+    type: dashboard
+    description: "dbt Charts のボード（charts/bar/three_point_percentage_leaders.yml）。2025-26 レギュラーシーズン。3P試投300本以上の選手。"
+    depends_on:
+      - ref('stg_player_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: wins_by_opponent_tier
+    label: "相手の強さ別の勝利数"
+    type: dashboard
+    description: "dbt Charts のボード（charts/bar/wins_by_opponent_tier.yml）。2025-26 レギュラーシーズンの勝利数の上位10チーム。相手も勝利数の順位で10チームずつに分けた。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: points_and_threes_combo
+    label: "1試合平均得点と3P試投数の推移"
+    type: dashboard
+    description: "dbt Charts のボード（charts/combo/points_and_threes_combo.yml）。レギュラーシーズン。1チームあたり。棒が得点（左の軸）、線が3P試投数（右の軸）。横軸はシーズンの開始年。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: games_by_weekday_hour
+    label: "曜日と開始時刻ごとの試合数"
+    type: dashboard
+    description: "dbt Charts のボード（charts/heatmap/games_by_weekday_hour.yml）。2025-26 レギュラーシーズン。開始時刻は米国東部時間。"
+    depends_on:
+      - ref('stg_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: team_points_histogram
+    label: "1試合のチームの得点の分布"
+    type: dashboard
+    description: "dbt Charts のボード（charts/histogram/team_points_histogram.yml）。2025-26 レギュラーシーズン。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: league_avg_points_kpi
+    label: "1試合平均得点（2025-26 レギュラーシーズン）"
+    type: dashboard
+    description: "dbt Charts のボード（charts/kpi/league_avg_points_kpi.yml）。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: atlantic_rank_bump
+    label: "アトランティック・ディビジョンの順位の推移"
+    type: dashboard
+    description: "dbt Charts のボード（charts/line/atlantic_rank_bump.yml）。レギュラーシーズンの勝利数の順位。2016-17〜2025-26シーズン。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: atlantic_three_point_rate_slope
+    label: "FG試投に占める3Pの割合の変化"
+    type: dashboard
+    description: "dbt Charts のボード（charts/line/atlantic_three_point_rate_slope.yml）。アトランティック・ディビジョンの5チーム。レギュラーシーズン。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: sixers_points_trend
+    label: "76ersの1試合平均得点と失点の推移"
+    type: dashboard
+    description: "dbt Charts のボード（charts/line/sixers_points_trend.yml）。レギュラーシーズン。横軸はシーズンの開始年。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: three_point_trend
+    label: "1試合平均3P試投数の推移"
+    type: dashboard
+    description: "dbt Charts のボード（charts/line/three_point_trend.yml）。レギュラーシーズン。1チームあたり。横軸はシーズンの開始年。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: arena_wins_bubble_map
+    label: "本拠地アリーナと勝利数"
+    type: dashboard
+    description: "dbt Charts のボード（charts/map/arena_wins_bubble_map.yml）。2025-26 レギュラーシーズン。点の大きさが勝利数。"
+    depends_on:
+      - ref('nba_arenas')
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: teams_by_state_map
+    label: "州ごとのNBAチームの数"
+    type: dashboard
+    description: "dbt Charts のボード（charts/map/teams_by_state_map.yml）。本拠地アリーナの所在地。トロントを除く29チーム。"
+    depends_on:
+      - ref('nba_arenas')
+    owner:
+      name: nba-dbt-playground
+
+  - name: atlantic_three_point_trend_multiples
+    # three_point_trend とグラフのタイトルが同じなので、見分けられるように補う
+    label: "1試合平均3P試投数の推移（アトランティック・ディビジョン）"
+    type: dashboard
+    description: "dbt Charts のボード（charts/multiples/atlantic_three_point_trend_multiples.yml）。アトランティック・ディビジョンの5チーム。レギュラーシーズン。横軸はシーズンの開始年。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: points_mix_pie
+    label: "得点の内訳"
+    type: dashboard
+    description: "dbt Charts のボード（charts/pie/points_mix_pie.yml）。2025-26 レギュラーシーズン。リーグ全体。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: sixers_points_mix_donut
+    label: "76ersの得点の内訳"
+    type: dashboard
+    description: "dbt Charts のボード（charts/pie/sixers_points_mix_donut.yml）。2025-26 レギュラーシーズン。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: edgecombe_shot_chart
+    label: "VJ Edgecombe（76ers）のシュート位置"
+    type: dashboard
+    description: "dbt Charts のボード（charts/scatter/edgecombe_shot_chart.yml）。2025-26 レギュラーシーズン。ゴールは下側。"
+    depends_on:
+      - ref('stg_shots')
+    owner:
+      name: nba-dbt-playground
+
+  - name: home_away_win_pct_dot_plot
+    label: "ホームとアウェイの勝率"
+    type: dashboard
+    description: "dbt Charts のボード（charts/scatter/home_away_win_pct_dot_plot.yml）。2025-26 レギュラーシーズンの勝利数の上位10チーム。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: points_vs_assists_bubble
+    label: "選手ごとの1試合平均得点とアシスト"
+    type: dashboard
+    description: "dbt Charts のボード（charts/scatter/points_vs_assists_bubble.yml）。2025-26 レギュラーシーズン。50試合以上に出場した選手。点の大きさは平均出場時間。"
+    depends_on:
+      - ref('stg_player_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: three_point_rate_vs_win_pct
+    label: "FG試投に占める3Pの割合と勝率"
+    type: dashboard
+    description: "dbt Charts のボード（charts/scatter/three_point_rate_vs_win_pct.yml）。2025-26 レギュラーシーズン。1点が1チーム。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: three_point_pct_spark_bar
+    label: "3P成功率の上位10チーム"
+    type: dashboard
+    description: "dbt Charts のボード（charts/spark_bar/three_point_pct_spark_bar.yml）。2025-26 レギュラーシーズン。値は%。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
+
+  - name: atlantic_standings_table
+    label: "アトランティック・ディビジョンの成績"
+    type: dashboard
+    description: "dbt Charts のボード（charts/table/atlantic_standings_table.yml）。2025-26 レギュラーシーズン。"
+    depends_on:
+      - ref('stg_team_game_stats')
+    owner:
+      name: nba-dbt-playground
