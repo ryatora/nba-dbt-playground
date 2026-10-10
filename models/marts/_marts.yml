@@ -1,9 +1,8 @@
-# marts は、元のモデルの列と行をそのまま出す（SELECT *）。利用者が読む層を分けるためのもので、加工はしない
 models:
   - name: team_games
     description: >
       チームの試合ごとのボックススコア。粒度: 1 試合 × 1 チームにつき 1 行（game_id × team_id）。
-      ボードなど、利用者が読むためのモデル。列と行は stg_team_game_stats と同じで、列の説明は stg_team_game_stats を参照。
+      dbt Charts のグラフなど、利用者が読むためのモデル。列と行は stg_team_game_stats と同じで、列の説明は stg_team_game_stats を参照。
     data_tests:
       - unique_combination:
           arguments:
@@ -21,7 +20,7 @@ models:
   - name: player_games
     description: >
       選手の試合ごとのボックススコア。粒度: 1 試合 × 1 選手につき 1 行（game_id × player_id）。
-      ボードなど、利用者が読むためのモデル。列と行は int_player_game_stats と同じ。
+      dbt Charts のグラフなど、利用者が読むためのモデル。列と行は int_player_game_stats と同じ。
       team_id・opponent_team_id は元データで空の行を補ったもので、ほかの列の説明は stg_player_game_stats を参照。
     data_tests:
       - unique_combination:
@@ -46,7 +45,7 @@ models:
   - name: shots
     description: >
       シュートの記録。粒度: 1 シュート 1 行（game_id × action_number）。
-      ボードなど、利用者が読むためのモデル。列と行は stg_shots と同じで、列の説明は stg_shots を参照。
+      dbt Charts のグラフなど、利用者が読むためのモデル。列と行は stg_shots と同じで、列の説明は stg_shots を参照。
     data_tests:
       - unique_combination:
           arguments:
@@ -64,7 +63,7 @@ models:
   - name: games
     description: >
       試合の一覧。粒度: 1 試合 1 行（game_id）。
-      ボードなど、利用者が読むためのモデル。列と行は stg_games と同じで、列の説明は stg_games を参照。
+      dbt Charts のグラフなど、利用者が読むためのモデル。列と行は stg_games と同じで、列の説明は stg_games を参照。
     columns:
       - name: game_id
         description: '{{ doc("game_id") }}'

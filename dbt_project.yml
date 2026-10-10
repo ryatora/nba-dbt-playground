@@ -18,7 +18,8 @@ models:
     # group は models/_groups.yml で定義している
     +group: nba
     # staging と intermediate は private にし、同じ group のモデルからだけ参照できるようにする
-    # exposures（ボード）は group に属さないため、private のモデルを参照できない
+    # exposures は group に属さないため、private のモデルを参照できない
+    # dbt Charts のグラフは exposures に登録しているので、marts を読む
     staging:
       +access: private
       +materialized: view

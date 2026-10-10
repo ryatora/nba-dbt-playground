@@ -90,7 +90,7 @@ scripts/
   load_raw.py        data/raw/ のファイルを nba.duckdb の raw スキーマに読み込む
 models/staging/      raw スキーマのデータを整える（列名の統一、シーズンや試合の種類の付与、期間の絞り込み）
 models/intermediate/ staging を組み合わせて、元データの欠けを補う
-models/marts/        ボードなど、利用者が読むモデル
+models/marts/        dbt Charts のグラフなど、利用者が読むモデル
 macros/              シーズン・試合の種類を gameId から求めるマクロなど
 tests/               モデルの前提を確かめるテスト
 seeds/               本拠地アリーナの座標など、元データにない表（取得に使ったクエリも置く）
