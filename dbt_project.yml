@@ -15,6 +15,8 @@ vars:
 
 models:
   nba_playground:
+    # group は models/_groups.yml で定義している
+    +group: nba
     staging:
       +materialized: view
       +schema: staging
@@ -24,4 +26,5 @@ models:
 
 seeds:
   nba_playground:
+    +group: nba
     +schema: seeds

@@ -1,0 +1,5 @@
+groups:
+  - name: nba
+    description: すべてのモデルと seed。
+    owner:
+      name: nba-dbt-playground
