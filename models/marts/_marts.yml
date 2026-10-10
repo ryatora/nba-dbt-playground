@@ -2,7 +2,8 @@ models:
   - name: team_games
     description: >
       チームの試合ごとのボックススコア。粒度: 1 試合 × 1 チームにつき 1 行（game_id × team_id）。
-      dbt Charts のグラフなど、利用者が読むためのモデル。列と行は stg_team_game_stats と同じで、列の説明は stg_team_game_stats を参照。
+      dbt Charts のグラフなど、利用者が読むためのモデル。stg_team_game_stats から、team_id が 0 の行（実在のチームではないとみなした行）を除いたもの。
+      列の説明は stg_team_game_stats を参照。
     data_tests:
       - unique_combination:
           arguments:
@@ -47,6 +48,8 @@ models:
           type: categorical
       - name: team_name
         description: '{{ doc("team_name") }}'
+        data_tests:
+          - not_null
         dimension:
           type: categorical
     metrics:
@@ -56,9 +59,7 @@ models:
         label: 得点
         agg: sum
       - name: team_game_count
-        description: >
-          試合数（1 試合 × 1 チームの行数）。2025-26 シーズンの一部の試合にある余分な行（team_name が null、得点が 0）も数えるため、
-          その行を除いて求めた値とはわずかに異なる。
+        description: 試合数（1 試合 × 1 チームの行数）。
         type: simple
         label: 試合数
         agg: count
@@ -80,13 +81,13 @@ models:
         label: 3P 試投数
         agg: sum
       - name: points_per_game
-        description: 1 試合平均得点（得点 ÷ 試合数）。試合数に余分な行を含むため、team_name が null の行を除いて求めた値よりわずかに低い。
+        description: 1 試合平均得点（得点 ÷ 試合数）。
         type: ratio
         label: 1 試合平均得点
         numerator: points
         denominator: team_game_count
       - name: win_pct
-        description: 勝率（勝利数 ÷ 試合数）。試合数に余分な行を含むため、team_name が null の行を除いて求めた値よりわずかに低い。
+        description: 勝率（勝利数 ÷ 試合数）。
         type: ratio
         label: 勝率
         numerator: wins
