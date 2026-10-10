@@ -9,7 +9,7 @@ NBA のデータを使った dbt のサンプルプロジェクトです。
 
 ## 使い方
 
-データはリポジトリに含めていないため、Kaggle から取得します。データが大きいので、ダウンロードには時間とディスクの空きが必要です。
+データはリポジトリに含めていないため、Kaggle から取得します。
 
 1. [uv](https://docs.astral.sh/uv/) をインストールする
 2. [Kaggle CLI の認証手順](https://github.com/Kaggle/kaggle-cli/blob/main/docs/README.md#authentication)に沿って、Kaggle の認証を設定する
@@ -19,10 +19,14 @@ NBA のデータを使った dbt のサンプルプロジェクトです。
 uv sync
 uv run python scripts/download_data.py   # data/raw/ に取得する
 uv run python scripts/load_raw.py        # nba.duckdb の raw スキーマに読み込む
-uv run dbt build
+uv run dbt build                         # seeds/ の CSV の読み込みと、モデルの作成・テストを行う
 ```
 
-ダウンロードが途中で失敗した場合は、`uv run python scripts/download_data.py --force` で取り直します。
+- データが大きいので、ダウンロードには時間とディスクの空きが必要
+- ダウンロードが途中で失敗した場合は、`uv run python scripts/download_data.py --force` で取り直す
+- dbt と後述の dct は、リポジトリのルートで実行する
+  - `profiles.yml` と `dbt_charts.yml` に書いた `nba.duckdb` が相対パスのため
+  - 別の場所（git worktree など）で実行すると、dbt はその場所に空の `nba.duckdb` を作り、dct は接続に失敗する
 
 ### SQL の書式を確認する
 
@@ -48,6 +52,18 @@ SUMMARIZE staging.stg_games;        -- 列ごとの型・最小値・最大値�
 
 - `uv run duckdb -ui nba.duckdb` で、ブラウザの画面から操作することもできる。UI は読み取り専用では開けない
 - 開いたまま `dbt build` を実行すると、ロックが取れずに失敗する。閉じてから実行する
+
+### グラフを見る
+
+`charts/` のボードを [dbt Charts](https://github.com/dbt-labs/dbt-charts) の `dct` で表示します。
+
+```sh
+uv tool install dbt-charts   # dct を dbt とは別の環境に入れる
+dct serve                    # 表示された URL をブラウザで開く
+```
+
+- `dbt build` で作ったテーブルを読むため、先に `dbt build` を実行しておく
+- `dct serve` が `nba.duckdb` を開いている間は、`dbt build` がロックで失敗する。止めてから実行する
 
 ## データの流れ
 
@@ -91,6 +107,8 @@ profiles.yml         DuckDB への接続先（nba.duckdb）。リポジトリの
   - シュート位置の座標は、2019-20 シーズンから入っている。2019-20 は、2020 年 2〜3 月を中心に欠けている
   - オールスター・一部のプレシーズン・ごく一部のレギュラーシーズンの試合は、選手の成績やシュートにはあるが、試合の一覧（`stg_games`）にない
   - 選手の成績の所属チーム（`team_id`）は、元データで空の行がある。補ったものは `int_player_game_stats` にあるが、一部は補えず空のまま
+- 確かめた範囲: 上の注意点とモデルの説明は、2025-26 シーズンのファイナル（2026-06-13）までのデータで確かめた
+  - `download_data.py` は実行した時点の最新版を取得するため、それより後の試合が入ると説明と合わないことがある
 
 ## ライセンス
 
