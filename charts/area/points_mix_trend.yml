@@ -7,7 +7,7 @@ queries:
               AVG(2 * (field_goals_made - three_pointers_made)) AS two_point_points,
               AVG(3 * three_pointers_made) AS three_point_points,
               AVG(free_throws_made) AS free_throw_points
-          FROM {{ ref('stg_team_game_stats') }}
+          FROM {{ ref('team_games') }}
           WHERE
               game_type = 'Regular Season'
               AND team_name IS NOT NULL

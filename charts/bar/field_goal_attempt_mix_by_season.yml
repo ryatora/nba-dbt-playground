@@ -7,7 +7,7 @@ queries:
               REPLACE(season, '-', '–') AS season,
               SUM(field_goals_attempted - three_pointers_attempted) AS two_point_attempts,
               SUM(three_pointers_attempted) AS three_point_attempts
-          FROM {{ ref('stg_team_game_stats') }}
+          FROM {{ ref('team_games') }}
           WHERE game_type = 'Regular Season'
           GROUP BY season
       )

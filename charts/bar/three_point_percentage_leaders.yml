@@ -4,7 +4,7 @@ queries:
       SELECT
           player_name,
           SUM(three_pointers_made) / SUM(three_pointers_attempted) AS three_point_percentage
-      FROM {{ ref('stg_player_game_stats') }}
+      FROM {{ ref('player_games') }}
       WHERE
           season_start_year = 2025
           AND game_type = 'Regular Season'

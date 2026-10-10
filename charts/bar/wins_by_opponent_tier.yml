@@ -9,7 +9,7 @@ queries:
               game_date,
               is_win,
               season_wins
-          FROM {{ ref('stg_team_game_stats') }}
+          FROM {{ ref('team_games') }}
           WHERE
               season_start_year = 2025
               AND game_type = 'Regular Season'

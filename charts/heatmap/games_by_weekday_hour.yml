@@ -6,7 +6,7 @@ queries:
               -- ISODOW は月曜が1、日曜が7
               ISODOW(game_started_at_est) AS weekday_number,
               HOUR(game_started_at_est) AS start_hour_number
-          FROM {{ ref('stg_games') }}
+          FROM {{ ref('games') }}
           WHERE
               season_start_year = 2025
               AND game_type = 'Regular Season'

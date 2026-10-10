@@ -14,7 +14,7 @@ queries:
               season_start_year,
               AVG(points) AS avg_points,
               AVG(opponent_points) AS avg_opponent_points
-          FROM {{ ref('stg_team_game_stats') }}
+          FROM {{ ref('team_games') }}
           WHERE
               game_type = 'Regular Season'
               AND team_name = '76ers'

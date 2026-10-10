@@ -14,7 +14,7 @@ queries:
                   WHEN 'Above the Break 3' THEN 6
               END AS area_order,
               CASE WHEN is_made THEN shot_value ELSE 0 END AS points
-          FROM {{ ref('stg_shots') }}
+          FROM {{ ref('shots') }}
           WHERE
               season_start_year = 2025
               AND game_type = 'Regular Season'

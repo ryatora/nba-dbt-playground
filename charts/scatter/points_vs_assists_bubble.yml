@@ -9,7 +9,7 @@ queries:
           AVG(points) AS avg_points,
           AVG(assists) AS avg_assists,
           AVG(minutes) AS avg_minutes
-      FROM {{ ref('stg_player_game_stats') }}
+      FROM {{ ref('player_games') }}
       WHERE
           season_start_year = 2025
           AND game_type = 'Regular Season'
