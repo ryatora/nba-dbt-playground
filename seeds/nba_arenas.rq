@@ -1,5 +1,6 @@
 # NBA の現在の30チームの本拠地アリーナと座標、所在地の州（Wikidata、CC0）
 # https://query.wikidata.org/ で実行し、結果を seeds/_seeds.yml の説明のとおりに変換して nba_arenas.csv にした
+# Los Angeles Clippers の行は手で直しているため、このクエリだけでは nba_arenas.csv を再現できない（理由は seeds/_seeds.yml）
 SELECT ?teamLabel ?venueLabel ?lat ?lon ?stateAbbr ?stateFips WHERE {
   ?team wdt:P118 wd:Q155223 ;
         wdt:P31 wd:Q13393265 ;
