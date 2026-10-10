@@ -263,6 +263,7 @@ models:
           - accepted_values:
               arguments:
                 values: [2, 3]
+                quote: false
       - name: shot_distance_ft
         description: リングからの距離（フィート）。コートの長さ（94 フィート）を超える誤った値は null にする。
       - name: area_detail
