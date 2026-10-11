@@ -146,9 +146,26 @@ models:
     description: >
       試合の一覧。粒度: 1 試合 1 行（game_id）。
       dbt Charts のグラフなど、利用者が読むためのモデル。列と行は stg_games と同じで、列の説明は stg_games を参照。
+    semantic_model:
+      enabled: true
     columns:
       - name: game_id
         description: '{{ doc("game_id") }}'
         data_tests:
           - unique
           - not_null
+        # team_games の foreign entity（game）と同じ名前の primary entity にする。
+        # これで、team_games の metric を、games の dimension で切り分けられる
+        entity:
+          type: primary
+          name: game
+      - name: game_label
+        description: >
+          試合の区分の表示名（例: NBA Finals、East First Round）。プレーオフや特別な試合だけに入っている。
+          表記揺れがあるため、集計には team_games の game_type を使う。
+        dimension:
+          type: categorical
+      - name: arena_name
+        description: 会場の名前。2025-26 シーズンの試合だけに入っている。
+        dimension:
+          type: categorical

@@ -14,6 +14,7 @@ NBA のデータを使った dbt のサンプルプロジェクト。データ�
 - intermediate: staging を結合して、元データの欠けを補う（`int_player_game_stats` の所属チーム）
 - marts: dbt Charts のグラフなど、利用者が読むモデル。利用者向けの加工が必要なときは、この層で行う
   - `team_games` には、Semantic Layer の semantic model と metric（1 試合平均得点・勝率・3P 試投率など）を定義している
+  - `games` にも semantic model を定義し、`team_games` の metric を試合の区分や会場で切り分けるための dimension を持たせている（entity の `game` でつなぐ）
   - staging と intermediate は access を private にしている。exposures は group に属さないため、private のモデルを参照できない。dbt Charts のグラフは exposures に登録しているので、marts を読む
 - seeds: 本拠地アリーナの座標など、元データにない小さな表（[Wikidata](https://www.wikidata.org/) から取得）
 
