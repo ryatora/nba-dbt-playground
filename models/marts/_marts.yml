@@ -2,20 +2,102 @@ models:
   - name: team_games
     description: >
       チームの試合ごとのボックススコア。粒度: 1 試合 × 1 チームにつき 1 行（game_id × team_id）。
-      dbt Charts のグラフなど、利用者が読むためのモデル。列と行は stg_team_game_stats と同じで、列の説明は stg_team_game_stats を参照。
+      dbt Charts のグラフなど、利用者が読むためのモデル。stg_team_game_stats から、team_id が 0 の行（実在のチームではないとみなした行）を除いたもの。
+      列の説明は stg_team_game_stats を参照。
     data_tests:
       - unique_combination:
           arguments:
             columns: [game_id, team_id]
+    semantic_model:
+      enabled: true
+    # 1 行を表す列がない（game_id × team_id）ため、primary entity の名前を付ける
+    # game・team は、それぞれ試合とチームの 1 行を指す列なので foreign entity にする
+    primary_entity: team_game
+    agg_time_dimension: game_date
     columns:
       - name: game_id
         description: '{{ doc("game_id") }}'
         data_tests:
           - not_null
+        entity:
+          type: foreign
+          name: game
       - name: team_id
         description: '{{ doc("team_id") }}'
         data_tests:
           - not_null
+        entity:
+          type: foreign
+          name: team
+      - name: game_date
+        description: '{{ doc("game_date") }}'
+        granularity: day
+        dimension:
+          type: time
+      - name: season
+        description: '{{ doc("season") }}'
+        dimension:
+          type: categorical
+      - name: game_type
+        description: '{{ doc("game_type") }}'
+        dimension:
+          type: categorical
+      - name: is_home
+        description: '{{ doc("is_home") }}'
+        dimension:
+          type: categorical
+      - name: team_name
+        description: '{{ doc("team_name") }}'
+        data_tests:
+          - not_null
+        dimension:
+          type: categorical
+    metrics:
+      - name: points
+        description: 得点の合計。
+        type: simple
+        label: 得点
+        agg: sum
+      - name: team_game_count
+        description: 試合数（1 試合 × 1 チームの行数）。
+        type: simple
+        label: 試合数
+        agg: count
+        expr: game_id
+      - name: wins
+        description: 勝利数。
+        type: simple
+        label: 勝利数
+        agg: sum
+        expr: CASE WHEN is_win THEN 1 ELSE 0 END
+      - name: field_goals_attempted
+        description: フィールドゴールの試投数の合計。
+        type: simple
+        label: FG 試投数
+        agg: sum
+      - name: three_pointers_attempted
+        description: 3P の試投数の合計。
+        type: simple
+        label: 3P 試投数
+        agg: sum
+      - name: points_per_game
+        description: 1 試合平均得点（得点 ÷ 試合数）。
+        type: ratio
+        label: 1 試合平均得点
+        numerator: points
+        denominator: team_game_count
+      - name: win_pct
+        description: 勝率（勝利数 ÷ 試合数）。
+        type: ratio
+        label: 勝率
+        numerator: wins
+        denominator: team_game_count
+      - name: three_point_attempt_rate
+        description: FG 試投に占める 3P の割合（3P 試投数 ÷ FG 試投数）。
+        type: ratio
+        label: 3P 試投率
+        numerator: three_pointers_attempted
+        denominator: field_goals_attempted
 
   - name: player_games
     description: >
@@ -64,9 +146,26 @@ models:
     description: >
       試合の一覧。粒度: 1 試合 1 行（game_id）。
       dbt Charts のグラフなど、利用者が読むためのモデル。列と行は stg_games と同じで、列の説明は stg_games を参照。
+    semantic_model:
+      enabled: true
     columns:
       - name: game_id
         description: '{{ doc("game_id") }}'
         data_tests:
           - unique
           - not_null
+        # team_games の foreign entity（game）と同じ名前の primary entity にする。
+        # これで、team_games の metric を、games の dimension で切り分けられる
+        entity:
+          type: primary
+          name: game
+      - name: game_label
+        description: >
+          試合の区分の表示名（例: NBA Finals、East First Round）。プレーオフや特別な試合だけに入っている。
+          表記揺れがあるため、集計には team_games の game_type を使う。
+        dimension:
+          type: categorical
+      - name: arena_name
+        description: 会場の名前。2025-26 シーズンの試合だけに入っている。
+        dimension:
+          type: categorical
