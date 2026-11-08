@@ -60,6 +60,10 @@
 対戦相手のチーム名（都市名を除いた部分）。
 {% enddocs %}
 
+{% docs arena_name %}
+会場の名前（例: Xfinity Mobile Arena）。
+{% enddocs %}
+
 {% docs is_home %}
 ホームの試合か。
 {% enddocs %}

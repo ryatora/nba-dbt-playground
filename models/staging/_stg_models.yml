@@ -69,7 +69,9 @@ models:
       - name: arena_id
         description: 会場の ID。全試合に入っているが、2005-06 シーズンの 1 試合は 0。
       - name: arena_name
-        description: 会場の名前。2025-26 シーズンの試合だけに入っている。
+        description: >
+          {{ doc("arena_name") }}
+          2025-26 シーズンの試合だけに入っている。
       - name: arena_city
         description: 会場の都市名。2025-26 シーズンの試合だけに入っている。
       - name: arena_state

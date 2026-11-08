@@ -28,7 +28,7 @@ uv run dbt build                         # seeds/ の CSV の読み込みと、�
   - `profiles.yml` と `dbt_charts.yml` に書いた `nba.duckdb` が相対パスのため。
   - 別の場所（git worktree など）で実行すると、dbt はその場所に空の `nba.duckdb` を作り、dct は接続に失敗する。
 - `dbt build` などで `Skipping semantic manifest validation` の警告（dbt1005）が出る。
-  - `team_games` に定義した Semantic Layer（semantic model と metric）の検証には dbt platform の設定（`dbt_cloud.yml`）が要り、ないと検証を飛ばすため。モデルの作成とテストには影響しない。
+  - marts に定義した Semantic Layer（semantic model と metric）の検証には dbt platform の設定（`dbt_cloud.yml`）が要り、ないと検証を飛ばすため。モデルの作成とテストには影響しない。
 
 ### SQL の書式を確認する
 
@@ -79,7 +79,7 @@ flowchart LR
         staging -->|dbt build| intermediate["intermediate<br>スキーマ"]
         staging -->|dbt build| marts["marts<br>スキーマ"]
         intermediate -->|dbt build| marts
-        seeds_schema["seeds<br>スキーマ"]
+        seeds_schema["seeds<br>スキーマ"] -->|dbt build| marts
     end
     duckdb -->|dct serve| charts["charts/<br>ボード"]
 ```
@@ -92,7 +92,7 @@ scripts/
   load_raw.py        data/raw/ のファイルを nba.duckdb の raw スキーマに読み込む
 models/staging/      raw スキーマのデータを整える（列名の統一、シーズンや試合の種類の付与、期間の絞り込み）
 models/intermediate/ staging を組み合わせて、元データの欠けを補う
-models/marts/        dbt Charts のグラフなど、利用者が読むモデル
+models/marts/        dbt Charts や Lightdash のグラフなど、利用者が読むモデル
 macros/              シーズン・試合の種類を gameId から求めるマクロなど
 tests/               モデルの前提を確かめるテスト
 seeds/               本拠地アリーナの座標など、元データにない表（取得に使ったクエリも置く）
