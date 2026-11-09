@@ -23,59 +23,55 @@ models:
               arguments:
                 values: [Preseason, Regular Season, All-Star, Playoffs, Play-In, NBA Cup Final]
       - name: game_label
-        description: >
-          試合の区分の表示名（例: NBA Finals、East First Round）。プレーオフや特別な試合だけに入っている。
-          表記揺れがあるため、集計には game_type を使う。
+        description: '{{ doc("game_label") }}'
       - name: game_sub_label
-        description: "game_label の補足（例: Game 5）。"
+        description: '{{ doc("game_sub_label") }}'
       - name: game_started_at_est
-        description: 試合開始日時（米国東部時間）。
+        description: '{{ doc("game_started_at_est") }}'
       - name: game_date
         description: '{{ doc("game_date") }}'
         data_tests:
           - not_null
       - name: home_team_id
-        description: ホームチームの team_id。
+        description: '{{ doc("home_team_id") }}'
         data_tests:
           - not_null
       - name: home_team_city
-        description: ホームチームの都市名。オールスターの一部の試合は null。
+        description: '{{ doc("home_team_city") }}'
       - name: home_team_name
-        description: ホームチームのチーム名（都市名を除いた部分）。
+        description: '{{ doc("home_team_name") }}'
       - name: away_team_id
-        description: アウェイチームの team_id。
+        description: '{{ doc("away_team_id") }}'
         data_tests:
           - not_null
       - name: away_team_city
-        description: アウェイチームの都市名。オールスターの一部の試合は null。
+        description: '{{ doc("away_team_city") }}'
       - name: away_team_name
-        description: アウェイチームのチーム名（都市名を除いた部分）。
+        description: '{{ doc("away_team_name") }}'
       - name: home_score
-        description: ホームチームの得点。
+        description: '{{ doc("home_score") }}'
         data_tests:
           - not_null
       - name: away_score
-        description: アウェイチームの得点。
+        description: '{{ doc("away_score") }}'
         data_tests:
           - not_null
       - name: winner_team_id
-        description: >
-          勝ったチームの team_id。home_team_id か away_team_id のどちらか
-          （tests/assert_winner_is_home_or_away.sql で確かめる）。
+        description: '{{ doc("winner_team_id") }}'
         data_tests:
           - not_null
       - name: attendance
-        description: 観客数。2025-26 シーズンの試合だけに入っていて、その中にも null の試合がある。
+        description: '{{ doc("attendance") }}'
       - name: arena_id
-        description: 会場の ID。全試合に入っているが、2005-06 シーズンの 1 試合は 0。
+        description: '{{ doc("arena_id") }}'
       - name: arena_name
         description: >
           {{ doc("arena_name") }}
           2025-26 シーズンの試合だけに入っている。
       - name: arena_city
-        description: 会場の都市名。2025-26 シーズンの試合だけに入っている。
+        description: '{{ doc("arena_city") }}'
       - name: arena_state
-        description: "会場の州の略称（例: CA）。2025-26 シーズンの試合だけに入っていて、その中にも null の試合がある。"
+        description: '{{ doc("arena_state") }}'
 
   - name: stg_players
     description: >
@@ -223,7 +219,7 @@ models:
         data_tests:
           - not_null
       - name: opponent_points
-        description: 対戦相手の得点。
+        description: '{{ doc("opponent_points") }}'
         data_tests:
           - not_null
       - name: field_goals_made
@@ -255,43 +251,45 @@ models:
       - name: personal_fouls
         description: '{{ doc("personal_fouls") }}'
       - name: plus_minus
-        description: '{{ doc("plus_minus") }}'
+        description: >
+          {{ doc("plus_minus") }}
+          チームの行では、一部の行を除いて試合の得失点差と同じ。
       - name: minutes
         description: >
           チームの選手の出場時間の合計（分）。延長がなければ 240（5 人 × 48 分）。
           オールスターの試合と、プレシーズンの一部の試合は 240 未満。
       - name: q1_points
-        description: 第 1 クォーターの得点。
+        description: '{{ doc("q1_points") }}'
       - name: q2_points
-        description: 第 2 クォーターの得点。
+        description: '{{ doc("q2_points") }}'
       - name: q3_points
-        description: 第 3 クォーターの得点。
+        description: '{{ doc("q3_points") }}'
       - name: q4_points
-        description: 第 4 クォーターの得点。
+        description: '{{ doc("q4_points") }}'
       - name: overtime_points
-        description: 延長の得点の合計。延長がない試合はほとんどが null。
+        description: '{{ doc("overtime_points") }}'
       - name: bench_points
-        description: ベンチから出場した選手の得点の合計。
+        description: '{{ doc("bench_points") }}'
       - name: points_in_the_paint
-        description: ペイントエリア（ゴール下の制限区域）での得点。
+        description: '{{ doc("points_in_the_paint") }}'
       - name: fast_break_points
-        description: 速攻での得点。
+        description: '{{ doc("fast_break_points") }}'
       - name: second_chance_points
-        description: オフェンスリバウンドの後の攻撃での得点（セカンドチャンスポイント）。
+        description: '{{ doc("second_chance_points") }}'
       - name: points_off_turnovers
-        description: 相手のターンオーバーの後の攻撃での得点。
+        description: '{{ doc("points_off_turnovers") }}'
       - name: biggest_lead
-        description: 試合中の最大のリード（点差）。
+        description: '{{ doc("biggest_lead") }}'
       - name: lead_changes
-        description: 試合中にリードしているチームが入れ替わった回数。
+        description: '{{ doc("lead_changes") }}'
       - name: times_tied
-        description: 試合中に同点になった回数。
+        description: '{{ doc("times_tied") }}'
       - name: season_wins
-        description: この試合を終えた時点での、シーズンの通算勝利数。
+        description: '{{ doc("season_wins") }}'
       - name: season_losses
-        description: この試合を終えた時点での、シーズンの通算敗戦数。
+        description: '{{ doc("season_losses") }}'
       - name: playoff_seed
-        description: プレーオフ・プレーインのシード順位。それ以外の試合はほとんどが null。
+        description: '{{ doc("playoff_seed") }}'
 
   - name: stg_player_game_stats
     description: >
@@ -364,11 +362,11 @@ models:
           {{ doc("is_win") }}
           一部のプレシーズンの行（team_name が null の行）と、ごく一部のレギュラーシーズンの行は null。
       - name: starting_position
-        description: 先発したときのポジション（G・F・C）。ベンチから出場した場合と、出場しなかった場合は null。
+        description: '{{ doc("starting_position") }}'
       - name: is_starter
-        description: 先発したか。false にはベンチから出場した場合と、出場しなかった場合の両方を含む。
+        description: '{{ doc("is_starter") }}'
       - name: status_comment
-        description: "出場しなかった理由（例: DNP - Coach's Decision）。出場しなかった行でも null のことがある。"
+        description: '{{ doc("status_comment") }}'
       - name: minutes
         description: >
           出場時間（分）。元データの一部（プレシーズン）にある '6:05' のような分:秒の値は分に換算する。
@@ -430,7 +428,7 @@ models:
               config:
                 severity: warn
       - name: action_number
-        description: 試合の中でのプレーの通し番号。
+        description: '{{ doc("action_number") }}'
         data_tests:
           - not_null
       - name: season_start_year
@@ -447,11 +445,11 @@ models:
           {{ doc("game_date") }}
           stg_games と結合できない試合は null。
       - name: period
-        description: ピリオド。1〜4 が通常のクォーターで、5 以降は延長。
+        description: '{{ doc("period") }}'
         data_tests:
           - not_null
       - name: clock
-        description: "ピリオドの残り時間。ISO 8601 の期間の形式（例: PT11M56.00S は残り 11 分 56 秒）。"
+        description: '{{ doc("clock") }}'
       - name: team_id
         description: シュートしたチーム。
         data_tests:
@@ -465,29 +463,27 @@ models:
           シュートした選手の名前。null の行がある（大半は 2025-26 シーズンの一部の試合）ため、
           名前が必要なときは player_id で stg_players と結合する。
       - name: shot_type
-        description: "シュートの種類（例: Jump Shot、Layup Shot）。"
+        description: '{{ doc("shot_type") }}'
       - name: is_made
-        description: 決まったか。
+        description: '{{ doc("is_made") }}'
         data_tests:
           - not_null
       - name: shot_value
-        description: >
-          2 点か 3 点か。2019-20 シーズンの途中で元データの記録の形式が変わったため、
-          新しい形式では actionType（'2pt'・'3pt'）から求める。元データの誤った値（0）は null にする。
+        description: '{{ doc("shot_value") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: [2, 3]
                 quote: false
       - name: shot_distance_ft
-        description: リングからの距離（フィート）。コートの長さ（94 フィート）を超える誤った値は null にする。
+        description: '{{ doc("shot_distance_ft") }}'
       - name: area_detail
-        description: "リングからの距離の帯（フィート）と方向（例: 16-24 Left）。area と同じく 2021-22 シーズンまでは null。"
+        description: '{{ doc("area_detail") }}'
       - name: description
-        description: "プレーの説明文（例: MISS V. Wembanyama driving Layup）。"
+        description: '{{ doc("description") }}'
       - name: area
-        description: "シュートしたエリア（例: Restricted Area、Left Corner 3）。2021-22 シーズンまでは null。"
+        description: '{{ doc("area") }}'
       - name: x
-        description: コート上の横方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
+        description: '{{ doc("x") }}'
       - name: y
-        description: コート上の縦方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
+        description: '{{ doc("y") }}'

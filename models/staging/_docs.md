@@ -130,5 +130,197 @@
 {% enddocs %}
 
 {% docs plus_minus %}
-出場中の得失点差（自チームの得点 − 相手の得点）。チームの行では、一部の行を除いて試合の得失点差と同じ。
+出場中の得失点差（自チームの得点 − 相手の得点）。
+{% enddocs %}
+
+{% docs game_label %}
+試合の区分の表示名（例: NBA Finals、East First Round）。プレーオフや特別な試合だけに入っている。表記揺れがあるため、集計には game_type を使う。
+{% enddocs %}
+
+{% docs game_sub_label %}
+game_label の補足（例: Game 5）。
+{% enddocs %}
+
+{% docs game_started_at_est %}
+試合開始日時（米国東部時間）。
+{% enddocs %}
+
+{% docs home_team_id %}
+ホームチームの team_id。
+{% enddocs %}
+
+{% docs home_team_city %}
+ホームチームの都市名。オールスターの一部の試合は null。
+{% enddocs %}
+
+{% docs home_team_name %}
+ホームチームのチーム名（都市名を除いた部分）。
+{% enddocs %}
+
+{% docs away_team_id %}
+アウェイチームの team_id。
+{% enddocs %}
+
+{% docs away_team_city %}
+アウェイチームの都市名。オールスターの一部の試合は null。
+{% enddocs %}
+
+{% docs away_team_name %}
+アウェイチームのチーム名（都市名を除いた部分）。
+{% enddocs %}
+
+{% docs home_score %}
+ホームチームの得点。
+{% enddocs %}
+
+{% docs away_score %}
+アウェイチームの得点。
+{% enddocs %}
+
+{% docs winner_team_id %}
+勝ったチームの team_id。home_team_id か away_team_id のどちらか（tests/assert_winner_is_home_or_away.sql で確かめる）。
+{% enddocs %}
+
+{% docs attendance %}
+観客数。2025-26 シーズンの試合だけに入っていて、その中にも null の試合がある。
+{% enddocs %}
+
+{% docs arena_id %}
+会場の ID。全試合に入っているが、2005-06 シーズンの 1 試合は 0。
+{% enddocs %}
+
+{% docs arena_city %}
+会場の都市名。2025-26 シーズンの試合だけに入っている。
+{% enddocs %}
+
+{% docs arena_state %}
+会場の州の略称（例: CA）。2025-26 シーズンの試合だけに入っていて、その中にも null の試合がある。
+{% enddocs %}
+
+{% docs opponent_points %}
+対戦相手の得点。
+{% enddocs %}
+
+{% docs q1_points %}
+第 1 クォーターの得点。
+{% enddocs %}
+
+{% docs q2_points %}
+第 2 クォーターの得点。
+{% enddocs %}
+
+{% docs q3_points %}
+第 3 クォーターの得点。
+{% enddocs %}
+
+{% docs q4_points %}
+第 4 クォーターの得点。
+{% enddocs %}
+
+{% docs overtime_points %}
+延長の得点の合計。延長がない試合はほとんどが null。
+{% enddocs %}
+
+{% docs bench_points %}
+ベンチから出場した選手の得点の合計。
+{% enddocs %}
+
+{% docs points_in_the_paint %}
+ペイントエリア（ゴール下の制限区域）での得点。
+{% enddocs %}
+
+{% docs fast_break_points %}
+速攻での得点。
+{% enddocs %}
+
+{% docs second_chance_points %}
+オフェンスリバウンドの後の攻撃での得点（セカンドチャンスポイント）。
+{% enddocs %}
+
+{% docs points_off_turnovers %}
+相手のターンオーバーの後の攻撃での得点。
+{% enddocs %}
+
+{% docs biggest_lead %}
+試合中の最大のリード（点差）。
+{% enddocs %}
+
+{% docs lead_changes %}
+試合中にリードしているチームが入れ替わった回数。
+{% enddocs %}
+
+{% docs times_tied %}
+試合中に同点になった回数。
+{% enddocs %}
+
+{% docs season_wins %}
+この試合を終えた時点での、シーズンの通算勝利数。
+{% enddocs %}
+
+{% docs season_losses %}
+この試合を終えた時点での、シーズンの通算敗戦数。
+{% enddocs %}
+
+{% docs playoff_seed %}
+プレーオフ・プレーインのシード順位。それ以外の試合はほとんどが null。
+{% enddocs %}
+
+{% docs starting_position %}
+先発したときのポジション（G・F・C）。ベンチから出場した場合と、出場しなかった場合は null。
+{% enddocs %}
+
+{% docs is_starter %}
+先発したか。false にはベンチから出場した場合と、出場しなかった場合の両方を含む。
+{% enddocs %}
+
+{% docs status_comment %}
+出場しなかった理由（例: DNP - Coach's Decision）。出場しなかった行でも null のことがある。
+{% enddocs %}
+
+{% docs action_number %}
+試合の中でのプレーの通し番号。
+{% enddocs %}
+
+{% docs period %}
+ピリオド。1〜4 が通常のクォーターで、5 以降は延長。
+{% enddocs %}
+
+{% docs clock %}
+ピリオドの残り時間。ISO 8601 の期間の形式（例: PT11M56.00S は残り 11 分 56 秒）。
+{% enddocs %}
+
+{% docs shot_type %}
+シュートの種類（例: Jump Shot、Layup Shot）。
+{% enddocs %}
+
+{% docs is_made %}
+決まったか。
+{% enddocs %}
+
+{% docs shot_value %}
+2 点か 3 点か。2019-20 シーズンの途中で元データの記録の形式が変わったため、新しい形式では actionType（'2pt'・'3pt'）から求める。元データの誤った値（0）は null にする。
+{% enddocs %}
+
+{% docs shot_distance_ft %}
+リングからの距離（フィート）。コートの長さ（94 フィート）を超える誤った値は null にする。
+{% enddocs %}
+
+{% docs area %}
+シュートしたエリア（例: Restricted Area、Left Corner 3）。2021-22 シーズンまでは null。
+{% enddocs %}
+
+{% docs area_detail %}
+リングからの距離の帯（フィート）と方向（例: 16-24 Left）。area と同じく 2021-22 シーズンまでは null。
+{% enddocs %}
+
+{% docs description %}
+プレーの説明文（例: MISS V. Wembanyama driving Layup）。
+{% enddocs %}
+
+{% docs x %}
+コート上の横方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
+{% enddocs %}
+
+{% docs y %}
+コート上の縦方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
 {% enddocs %}
