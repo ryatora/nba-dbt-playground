@@ -3,7 +3,6 @@ models:
     description: >
       チームの試合ごとのボックススコア。粒度: 1 試合 × 1 チームにつき 1 行（game_id × team_id）。
       dbt Charts や Lightdash のグラフなど、利用者が読むためのモデル。stg_team_game_stats から、team_id が 0 の行（実在のチームではないとみなした行）を除いたもの。
-      列の説明は stg_team_game_stats を参照。
     data_tests:
       - unique_combination:
           arguments:
@@ -29,11 +28,8 @@ models:
         entity:
           type: foreign
           name: team
-      - name: game_date
-        description: '{{ doc("game_date") }}'
-        granularity: day
-        dimension:
-          type: time
+      - name: season_start_year
+        description: '{{ doc("season_start_year") }}'
       - name: season
         description: '{{ doc("season") }}'
         dimension:
@@ -42,10 +38,11 @@ models:
         description: '{{ doc("game_type") }}'
         dimension:
           type: categorical
-      - name: is_home
-        description: '{{ doc("is_home") }}'
+      - name: game_date
+        description: '{{ doc("game_date") }}'
+        granularity: day
         dimension:
-          type: categorical
+          type: time
       - name: team_city
         description: >
           {{ doc("team_city") }}
@@ -58,12 +55,99 @@ models:
           - not_null
         dimension:
           type: categorical
-    metrics:
+      - name: opponent_team_id
+        description: 対戦相手のチームの team_id。
+      - name: opponent_team_city
+        description: '{{ doc("opponent_team_city") }}'
+      - name: opponent_team_name
+        description: '{{ doc("opponent_team_name") }}'
+      - name: is_home
+        description: '{{ doc("is_home") }}'
+        dimension:
+          type: categorical
+      - name: is_win
+        description: >
+          {{ doc("is_win") }}
+          元データの誤りで、得点が同じ（0-0 を含む）なのに勝敗が付いている試合がごく一部にある。
       - name: points
+        description: チームの得点。
+      - name: opponent_points
+        description: '{{ doc("opponent_points") }}'
+      - name: field_goals_made
+        description: '{{ doc("field_goals_made") }}'
+      - name: field_goals_attempted
+        description: '{{ doc("field_goals_attempted") }}'
+      - name: three_pointers_made
+        description: '{{ doc("three_pointers_made") }}'
+      - name: three_pointers_attempted
+        description: '{{ doc("three_pointers_attempted") }}'
+      - name: free_throws_made
+        description: '{{ doc("free_throws_made") }}'
+      - name: free_throws_attempted
+        description: '{{ doc("free_throws_attempted") }}'
+      - name: offensive_rebounds
+        description: '{{ doc("offensive_rebounds") }}'
+      - name: defensive_rebounds
+        description: '{{ doc("defensive_rebounds") }}'
+      - name: total_rebounds
+        description: '{{ doc("total_rebounds") }}'
+      - name: assists
+        description: '{{ doc("assists") }}'
+      - name: steals
+        description: '{{ doc("steals") }}'
+      - name: blocks
+        description: '{{ doc("blocks") }}'
+      - name: turnovers
+        description: '{{ doc("turnovers") }}'
+      - name: personal_fouls
+        description: '{{ doc("personal_fouls") }}'
+      - name: plus_minus
+        description: >
+          {{ doc("plus_minus") }}
+          チームの行では、一部の行を除いて試合の得失点差と同じ。
+      - name: minutes
+        description: >
+          チームの選手の出場時間の合計（分）。延長がなければ 240（5 人 × 48 分）。
+          オールスターの試合と、プレシーズンの一部の試合は 240 未満。
+      - name: q1_points
+        description: '{{ doc("q1_points") }}'
+      - name: q2_points
+        description: '{{ doc("q2_points") }}'
+      - name: q3_points
+        description: '{{ doc("q3_points") }}'
+      - name: q4_points
+        description: '{{ doc("q4_points") }}'
+      - name: overtime_points
+        description: '{{ doc("overtime_points") }}'
+      - name: bench_points
+        description: '{{ doc("bench_points") }}'
+      - name: points_in_the_paint
+        description: '{{ doc("points_in_the_paint") }}'
+      - name: fast_break_points
+        description: '{{ doc("fast_break_points") }}'
+      - name: second_chance_points
+        description: '{{ doc("second_chance_points") }}'
+      - name: points_off_turnovers
+        description: '{{ doc("points_off_turnovers") }}'
+      - name: biggest_lead
+        description: '{{ doc("biggest_lead") }}'
+      - name: lead_changes
+        description: '{{ doc("lead_changes") }}'
+      - name: times_tied
+        description: '{{ doc("times_tied") }}'
+      - name: season_wins
+        description: '{{ doc("season_wins") }}'
+      - name: season_losses
+        description: '{{ doc("season_losses") }}'
+      - name: playoff_seed
+        description: '{{ doc("playoff_seed") }}'
+    metrics:
+      - name: total_points
         description: 得点の合計。
         type: simple
         label: 得点
         agg: sum
+        expr: points
       - name: team_game_count
         description: 試合数（1 試合 × 1 チームの行数）。同じ試合を両チームで 1 回ずつ数えるので、試合の数そのものは games の game_count を使う。
         type: simple
@@ -76,26 +160,30 @@ models:
         label: 勝利数
         agg: sum
         expr: CASE WHEN is_win THEN 1 ELSE 0 END
-      - name: field_goals_attempted
+      - name: total_field_goals_attempted
         description: フィールドゴールの試投数の合計。
         type: simple
         label: FG 試投数
         agg: sum
-      - name: three_pointers_attempted
+        expr: field_goals_attempted
+      - name: total_three_pointers_attempted
         description: 3P の試投数の合計。
         type: simple
         label: 3P 試投数
         agg: sum
-      - name: three_pointers_made
+        expr: three_pointers_attempted
+      - name: total_three_pointers_made
         description: 3P の成功数の合計。
         type: simple
         label: 3P 成功数
         agg: sum
-      - name: opponent_points
+        expr: three_pointers_made
+      - name: total_opponent_points
         description: 対戦相手の得点（失点）の合計。
         type: simple
         label: 失点
         agg: sum
+        expr: opponent_points
       - name: point_differential
         description: 得失点差（得点 − 失点）の合計。
         type: simple
@@ -122,18 +210,19 @@ models:
         type: simple
         label: FT の得点
         agg: sum
+        # カラムをそのまま合計するが、2P・3P の内訳と名前をそろえるため total_ を付けない
         expr: free_throws_made
       - name: points_per_game
         description: 1 試合平均得点（得点 ÷ 試合数）。
         type: ratio
         label: 1 試合平均得点
-        numerator: points
+        numerator: total_points
         denominator: team_game_count
       - name: opponent_points_per_game
         description: 1 試合平均失点（失点 ÷ 試合数）。
         type: ratio
         label: 1 試合平均失点
-        numerator: opponent_points
+        numerator: total_opponent_points
         denominator: team_game_count
       - name: point_differential_per_game
         description: 1 試合平均の得失点差（得失点差 ÷ 試合数）。
@@ -151,19 +240,19 @@ models:
         description: FG 試投に占める 3P の割合（3P 試投数 ÷ FG 試投数）。
         type: ratio
         label: 3P 試投率
-        numerator: three_pointers_attempted
-        denominator: field_goals_attempted
+        numerator: total_three_pointers_attempted
+        denominator: total_field_goals_attempted
       - name: three_point_pct
         description: 3P 成功率（3P 成功数 ÷ 3P 試投数）。
         type: ratio
         label: 3P 成功率
-        numerator: three_pointers_made
-        denominator: three_pointers_attempted
+        numerator: total_three_pointers_made
+        denominator: total_three_pointers_attempted
       - name: three_pointers_attempted_per_game
         description: 1 試合平均の 3P 試投数（3P 試投数 ÷ 試合数）。
         type: ratio
         label: 1 試合平均 3P 試投数
-        numerator: three_pointers_attempted
+        numerator: total_three_pointers_attempted
         denominator: team_game_count
       - name: two_point_points_per_game
         description: 1 試合平均の 2P の得点（2P の得点 ÷ 試合数）。
@@ -188,7 +277,7 @@ models:
     description: >
       選手の試合ごとのボックススコア。粒度: 1 試合 × 1 選手につき 1 行（game_id × player_id）。
       dbt Charts や Lightdash のグラフなど、利用者が読むためのモデル。列と行は int_player_game_stats と同じ。
-      team_id・opponent_team_id は元データで空の行を補ったもので、ほかの列の説明は stg_player_game_stats を参照。
+      team_id・opponent_team_id は元データで空の行を補ったもの。
     data_tests:
       - unique_combination:
           arguments:
@@ -210,13 +299,8 @@ models:
         description: '{{ doc("player_id") }}'
         data_tests:
           - not_null
-      - name: game_date
-        description: >
-          {{ doc("game_date") }}
-          一部のプレシーズンの行は null。
-        granularity: day
-        dimension:
-          type: time
+      - name: season_start_year
+        description: '{{ doc("season_start_year") }}'
       - name: season
         description: '{{ doc("season") }}'
         dimension:
@@ -225,6 +309,13 @@ models:
         description: '{{ doc("game_type") }}'
         dimension:
           type: categorical
+      - name: game_date
+        description: >
+          {{ doc("game_date") }}
+          一部のプレシーズンの行は null。
+        granularity: day
+        dimension:
+          type: time
       - name: player_name
         description: >
           元データの名と姓をスペースでつないだもの。元データで名前が空の行（一部のプレシーズン・オールスター）は空文字。
@@ -234,6 +325,10 @@ models:
         description: >
           選手の所属チーム。元データで空の行は、同じ試合のチームのボックススコアから補っている（int_player_game_stats）。
           チーム名が空の一部のプレシーズンの行と、一部のオールスターの行は補えず null。
+      - name: team_city
+        description: >
+          {{ doc("team_city") }}
+          一部のオールスターの行は null。
       - name: team_name
         description: >
           {{ doc("team_name") }}
@@ -242,9 +337,63 @@ models:
           type: categorical
       - name: opponent_team_id
         description: 対戦相手のチーム。team_id と同じ方法で補っている。
+      - name: opponent_team_city
+        description: '{{ doc("opponent_team_city") }}'
+      - name: opponent_team_name
+        description: '{{ doc("opponent_team_name") }}'
+      - name: is_home
+        description: >
+          {{ doc("is_home") }}
+          一部のプレシーズンの行（team_name が null の行）は null。
+      - name: is_win
+        description: >
+          {{ doc("is_win") }}
+          一部のプレシーズンの行（team_name が null の行）と、ごく一部のレギュラーシーズンの行は null。
+      - name: starting_position
+        description: '{{ doc("starting_position") }}'
+      - name: is_starter
+        description: '{{ doc("is_starter") }}'
+      - name: status_comment
+        description: '{{ doc("status_comment") }}'
+      - name: minutes
+        description: >
+          出場時間（分）。元データの一部（プレシーズン）にある '6:05' のような分:秒の値は分に換算する。
+          負の値は誤りとみなして null にする。出場しなかった行の多くは null。
+      - name: points
+        description: 得点。一部のプレシーズンの行は null。
+      - name: field_goals_made
+        description: '{{ doc("field_goals_made") }}'
+      - name: field_goals_attempted
+        description: '{{ doc("field_goals_attempted") }}'
+      - name: three_pointers_made
+        description: '{{ doc("three_pointers_made") }}'
+      - name: three_pointers_attempted
+        description: '{{ doc("three_pointers_attempted") }}'
+      - name: free_throws_made
+        description: '{{ doc("free_throws_made") }}'
+      - name: free_throws_attempted
+        description: '{{ doc("free_throws_attempted") }}'
+      - name: offensive_rebounds
+        description: '{{ doc("offensive_rebounds") }}'
+      - name: defensive_rebounds
+        description: '{{ doc("defensive_rebounds") }}'
+      - name: total_rebounds
+        description: '{{ doc("total_rebounds") }}'
+      - name: assists
+        description: '{{ doc("assists") }}'
+      - name: steals
+        description: '{{ doc("steals") }}'
+      - name: blocks
+        description: '{{ doc("blocks") }}'
+      - name: turnovers
+        description: '{{ doc("turnovers") }}'
+      - name: personal_fouls
+        description: '{{ doc("personal_fouls") }}'
+      - name: plus_minus
+        description: '{{ doc("plus_minus") }}'
     metrics:
-      # points は team_games の metric で使っているため、別の名前にする
-      - name: player_points
+      # total_points は team_games の metric で使っているため、player_ を前に付ける（metric の名前はプロジェクト全体で一意）
+      - name: player_total_points
         description: 選手の得点の合計。
         type: simple
         label: 選手の得点
@@ -254,7 +403,7 @@ models:
   - name: shots
     description: >
       シュートの記録。粒度: 1 シュート 1 行（game_id × action_number）。
-      dbt Charts や Lightdash のグラフなど、利用者が読むためのモデル。列と行は stg_shots と同じで、列の説明は stg_shots を参照。
+      dbt Charts や Lightdash のグラフなど、利用者が読むためのモデル。列と行は stg_shots と同じ。
     data_tests:
       - unique_combination:
           arguments:
@@ -273,16 +422,11 @@ models:
           type: foreign
           name: game
       - name: action_number
-        description: 試合の中でのプレーの通し番号。
+        description: '{{ doc("action_number") }}'
         data_tests:
           - not_null
-      - name: game_date
-        description: >
-          {{ doc("game_date") }}
-          stg_games と結合できない試合は null。
-        granularity: day
-        dimension:
-          type: time
+      - name: season_start_year
+        description: '{{ doc("season_start_year") }}'
       - name: season
         description: '{{ doc("season") }}'
         dimension:
@@ -291,20 +435,53 @@ models:
         description: '{{ doc("game_type") }}'
         dimension:
           type: categorical
+      - name: game_date
+        description: >
+          {{ doc("game_date") }}
+          stg_games と結合できない試合は null。
+        granularity: day
+        dimension:
+          type: time
+      - name: period
+        description: '{{ doc("period") }}'
+      - name: clock
+        description: '{{ doc("clock") }}'
+      - name: team_id
+        description: シュートしたチーム。
       - name: team_abbreviation
         description: "チームの略称（例: BOS）。2025-26 シーズンの一部の試合は null。"
         dimension:
           type: categorical
-      - name: area
-        description: "シュートしたエリア（例: Restricted Area、Left Corner 3）。2021-22 シーズンまでは null。"
-        dimension:
-          type: categorical
+      - name: player_id
+        description: '{{ doc("player_id") }}'
+      - name: player_name
+        description: >
+          シュートした選手の名前。null の行がある（大半は 2025-26 シーズンの一部の試合）ため、
+          名前が必要なときは player_id で stg_players と結合する。
+      - name: shot_type
+        description: '{{ doc("shot_type") }}'
       - name: is_made
-        description: 決まったか。
+        description: '{{ doc("is_made") }}'
         dimension:
           type: categorical
+      - name: shot_value
+        description: '{{ doc("shot_value") }}'
+      - name: shot_distance_ft
+        description: '{{ doc("shot_distance_ft") }}'
+      - name: area
+        description: '{{ doc("area") }}'
+        dimension:
+          type: categorical
+      - name: area_detail
+        description: '{{ doc("area_detail") }}'
+      - name: x
+        description: '{{ doc("x") }}'
+      - name: y
+        description: '{{ doc("y") }}'
+      - name: description
+        description: '{{ doc("description") }}'
     metrics:
-      # team_games の three_pointers_attempted（ボックススコアの合計）と区別するため、shot_ を前に付ける
+      # シュートの記録の集計だと分かるよう、shot_ を前に付ける（team_games の total_three_pointers_attempted はボックススコアの合計）
       - name: shot_count
         description: シュートの本数（フィールドゴールの試投数。フリースローは含まない）。
         type: simple
@@ -327,7 +504,7 @@ models:
   - name: games
     description: >
       試合の一覧。粒度: 1 試合 1 行（game_id）。
-      dbt Charts や Lightdash のグラフなど、利用者が読むためのモデル。列と行は stg_games と同じで、列の説明は stg_games を参照。
+      dbt Charts や Lightdash のグラフなど、利用者が読むためのモデル。列と行は stg_games と同じ。
     config:
       meta:
         # Lightdash の設定。結合で集計がずれないよう、1 行を表す列を指定する
@@ -352,21 +529,8 @@ models:
         entity:
           type: primary
           name: game
-      - name: game_date
-        description: '{{ doc("game_date") }}'
-        granularity: day
-        dimension:
-          type: time
-      - name: game_started_at_est
-        description: 試合開始日時（米国東部時間）。
-        granularity: hour
-        dimension:
-          type: time
-        config:
-          meta:
-            dimension:
-              # Lightdash で曜日と開始時刻ごとに集計できるよう、時間の単位を足す
-              time_intervals: [RAW, HOUR, DAY, DAY_OF_WEEK_NAME, HOUR_OF_DAY_NUM]
+      - name: season_start_year
+        description: '{{ doc("season_start_year") }}'
       - name: season
         description: '{{ doc("season") }}'
         dimension:
@@ -376,11 +540,48 @@ models:
         dimension:
           type: categorical
       - name: game_label
-        description: >
-          試合の区分の表示名（例: NBA Finals、East First Round）。プレーオフや特別な試合だけに入っている。
-          表記揺れがあるため、集計には team_games の game_type を使う。
+        description: '{{ doc("game_label") }}'
         dimension:
           type: categorical
+      - name: game_sub_label
+        description: '{{ doc("game_sub_label") }}'
+      - name: game_started_at_est
+        description: '{{ doc("game_started_at_est") }}'
+        granularity: hour
+        dimension:
+          type: time
+        config:
+          meta:
+            dimension:
+              # Lightdash で曜日と開始時刻ごとに集計できるよう、時間の単位を足す
+              time_intervals: [RAW, HOUR, DAY, DAY_OF_WEEK_NAME, HOUR_OF_DAY_NUM]
+      - name: game_date
+        description: '{{ doc("game_date") }}'
+        granularity: day
+        dimension:
+          type: time
+      - name: home_team_id
+        description: '{{ doc("home_team_id") }}'
+      - name: home_team_city
+        description: '{{ doc("home_team_city") }}'
+      - name: home_team_name
+        description: '{{ doc("home_team_name") }}'
+      - name: away_team_id
+        description: '{{ doc("away_team_id") }}'
+      - name: away_team_city
+        description: '{{ doc("away_team_city") }}'
+      - name: away_team_name
+        description: '{{ doc("away_team_name") }}'
+      - name: home_score
+        description: '{{ doc("home_score") }}'
+      - name: away_score
+        description: '{{ doc("away_score") }}'
+      - name: winner_team_id
+        description: '{{ doc("winner_team_id") }}'
+      - name: attendance
+        description: '{{ doc("attendance") }}'
+      - name: arena_id
+        description: '{{ doc("arena_id") }}'
       - name: arena_name
         description: >
           {{ doc("arena_name") }}
@@ -400,6 +601,10 @@ models:
               # 現時点では、2025-26 シーズンで一致しないのはそうした会場だけ
               config:
                 severity: warn
+      - name: arena_city
+        description: '{{ doc("arena_city") }}'
+      - name: arena_state
+        description: '{{ doc("arena_state") }}'
     metrics:
       - name: game_count
         description: 試合数（1 試合を 1 回だけ数える）。team_games の team_game_count は同じ試合を両チームで数えるので、ふつうはこの値の 2 倍になる。
@@ -442,10 +647,6 @@ models:
           - not_null
         dimension:
           type: categorical
-      - name: state_abbr
-        description: 所在地の州の略称。米国外のトロントは null。
-        dimension:
-          type: categorical
       # 緯度・経度は Lightdash の地図に使う。MetricFlow の dimension の type（categorical・time）には当てはまらないので、dimension を付けない
       - name: latitude
         description: アリーナの緯度。
@@ -455,3 +656,7 @@ models:
         description: アリーナの経度。
         data_tests:
           - not_null
+      - name: state_abbr
+        description: 所在地の州の略称。米国外のトロントは null。
+        dimension:
+          type: categorical
