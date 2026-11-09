@@ -23,12 +23,19 @@
 {% enddocs %}
 
 {% docs player_id %}
-選手 ID。stg_players と結合して名前などを取れるが、一部の選手は stg_players にない。
+選手 ID。
+{% enddocs %}
+
+{% docs player_id_join_hint %}
+stg_players と結合して名前などを取れるが、一部の選手は stg_players にない。
 {% enddocs %}
 
 {% docs team_id %}
-チーム ID。移転・改名しても同じ ID。stg_team_histories と結合して名称の履歴を取れるが、
-オールスターのチームやプレシーズンで対戦した海外のチームなどは stg_team_histories にない。
+チーム ID。移転・改名しても同じ ID。
+{% enddocs %}
+
+{% docs team_id_join_hint %}
+stg_team_histories と結合して名称の履歴を取れるが、オールスターのチームやプレシーズンで対戦した海外のチームなどは stg_team_histories にない。
 {% enddocs %}
 
 {% docs game_date %}
@@ -323,4 +330,84 @@ game_label の補足（例: Game 5）。
 
 {% docs y %}
 コート上の縦方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
+{% enddocs %}
+
+{% docs team_games_is_win %}
+元データの誤りで、得点が同じ（0-0 を含む）なのに勝敗が付いている試合がごく一部にある。
+{% enddocs %}
+
+{% docs team_games_minutes %}
+チームの選手の出場時間の合計（分）。延長がなければ 240（5 人 × 48 分）。オールスターの試合と、プレシーズンの一部の試合は 240 未満。
+{% enddocs %}
+
+{% docs team_games_opponent_team_id %}
+対戦相手のチームの team_id。
+{% enddocs %}
+
+{% docs team_games_plus_minus %}
+チームの行では、一部の行を除いて試合の得失点差と同じ。
+{% enddocs %}
+
+{% docs team_games_points %}
+チームの得点。
+{% enddocs %}
+
+{% docs player_games_game_date %}
+一部のプレシーズンの行は null。
+{% enddocs %}
+
+{% docs player_games_is_home %}
+一部のプレシーズンの行（team_name が null の行）は null。
+{% enddocs %}
+
+{% docs player_games_is_win %}
+一部のプレシーズンの行（team_name が null の行）と、ごく一部のレギュラーシーズンの行は null。
+{% enddocs %}
+
+{% docs player_games_minutes %}
+出場時間（分）。元データの一部（プレシーズン）にある '6:05' のような分:秒の値は分に換算する。負の値は誤りとみなして null にする。出場しなかった行の多くは null。
+{% enddocs %}
+
+{% docs player_games_player_name %}
+元データの名と姓をスペースでつないだもの。元データで名前が空の行（一部のプレシーズン・オールスター）は空文字。
+{% enddocs %}
+
+{% docs player_games_points %}
+得点。一部のプレシーズンの行は null。
+{% enddocs %}
+
+{% docs player_games_team_id %}
+選手の所属チーム。元データで空の行は、同じ試合のチームのボックススコアから補っている。チーム名が空の一部のプレシーズンの行と、一部のオールスターの行は補えず null。
+{% enddocs %}
+
+{% docs player_games_opponent_team_id %}
+対戦相手のチーム。team_id と同じ方法で補っている。
+{% enddocs %}
+
+{% docs player_games_team_name %}
+一部のプレシーズンの行は null。
+{% enddocs %}
+
+{% docs player_games_team_city %}
+一部のオールスターの行は null。
+{% enddocs %}
+
+{% docs shots_player_name %}
+シュートした選手の名前。null の行がある（大半は 2025-26 シーズンの一部の試合）。
+{% enddocs %}
+
+{% docs shots_team_abbreviation %}
+チームの略称（例: BOS）。2025-26 シーズンの一部の試合は null。
+{% enddocs %}
+
+{% docs shots_team_id %}
+シュートしたチーム。
+{% enddocs %}
+
+{% docs games_arena_name %}
+2025-26 シーズンの試合だけに入っている。
+{% enddocs %}
+
+{% docs scoreless_games_note %}
+2024-25 シーズンの一部の試合は、元データで両チームの得点が 0 と記録されている（フィールドゴールなどの記録はあり、勝敗も付いている）。
 {% enddocs %}

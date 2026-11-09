@@ -13,13 +13,14 @@ models:
         data_tests:
           - not_null
       - name: player_id
-        description: '{{ doc("player_id") }}'
+        description: >
+          {{ doc("player_id") }}
+          {{ doc("player_id_join_hint") }}
         data_tests:
           - not_null
       - name: team_id
         description: >
-          選手の所属チーム。元データで空の行は、同じ試合の stg_team_game_stats から、
-          チームの都市名とチーム名で照合して補う。チーム名が空の一部のプレシーズンの行と、
-          一部のオールスターの行は補えず null。
+          {{ doc("player_games_team_id") }}
+          補うときの照合には、同じ試合の stg_team_game_stats のチームの都市名とチーム名を使う。
       - name: opponent_team_id
-        description: 対戦相手のチーム。team_id と同じ方法で補う。
+        description: '{{ doc("player_games_opponent_team_id") }}'
