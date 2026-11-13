@@ -23,12 +23,19 @@
 {% enddocs %}
 
 {% docs player_id %}
-選手 ID。stg_players と結合して名前などを取れるが、一部の選手は stg_players にない。
+選手 ID。
+{% enddocs %}
+
+{% docs player_id_join_hint %}
+stg_players と結合して名前などを取れるが、一部の選手は stg_players にない。
 {% enddocs %}
 
 {% docs team_id %}
-チーム ID。移転・改名しても同じ ID。stg_team_histories と結合して名称の履歴を取れるが、
-オールスターのチームやプレシーズンで対戦した海外のチームなどは stg_team_histories にない。
+チーム ID。移転・改名しても同じ ID。
+{% enddocs %}
+
+{% docs team_id_join_hint %}
+stg_team_histories と結合して名称の履歴を取れるが、オールスターのチームやプレシーズンで対戦した海外のチームなどは stg_team_histories にない。
 {% enddocs %}
 
 {% docs game_date %}
@@ -58,6 +65,10 @@
 
 {% docs opponent_team_name %}
 対戦相手のチーム名（都市名を除いた部分）。
+{% enddocs %}
+
+{% docs arena_name %}
+会場の名前（例: Xfinity Mobile Arena）。
 {% enddocs %}
 
 {% docs is_home %}
@@ -126,5 +137,277 @@
 {% enddocs %}
 
 {% docs plus_minus %}
-出場中の得失点差（自チームの得点 − 相手の得点）。チームの行では、一部の行を除いて試合の得失点差と同じ。
+出場中の得失点差（自チームの得点 − 相手の得点）。
+{% enddocs %}
+
+{% docs game_label %}
+試合の区分の表示名（例: NBA Finals、East First Round）。プレーオフや特別な試合だけに入っている。表記揺れがあるため、集計には game_type を使う。
+{% enddocs %}
+
+{% docs game_sub_label %}
+game_label の補足（例: Game 5）。
+{% enddocs %}
+
+{% docs game_started_at_est %}
+試合開始日時（米国東部時間）。
+{% enddocs %}
+
+{% docs home_team_id %}
+ホームチームの team_id。
+{% enddocs %}
+
+{% docs home_team_city %}
+ホームチームの都市名。オールスターの一部の試合は null。
+{% enddocs %}
+
+{% docs home_team_name %}
+ホームチームのチーム名（都市名を除いた部分）。
+{% enddocs %}
+
+{% docs away_team_id %}
+アウェイチームの team_id。
+{% enddocs %}
+
+{% docs away_team_city %}
+アウェイチームの都市名。オールスターの一部の試合は null。
+{% enddocs %}
+
+{% docs away_team_name %}
+アウェイチームのチーム名（都市名を除いた部分）。
+{% enddocs %}
+
+{% docs home_score %}
+ホームチームの得点。
+{% enddocs %}
+
+{% docs away_score %}
+アウェイチームの得点。
+{% enddocs %}
+
+{% docs winner_team_id %}
+勝ったチームの team_id。home_team_id か away_team_id のどちらか（tests/assert_winner_is_home_or_away.sql で確かめる）。
+{% enddocs %}
+
+{% docs attendance %}
+観客数。2025-26 シーズンの試合だけに入っていて、その中にも null の試合がある。
+{% enddocs %}
+
+{% docs arena_id %}
+会場の ID。全試合に入っているが、2005-06 シーズンの 1 試合は 0。
+{% enddocs %}
+
+{% docs arena_city %}
+会場の都市名。2025-26 シーズンの試合だけに入っている。
+{% enddocs %}
+
+{% docs arena_state %}
+会場の州の略称（例: CA）。2025-26 シーズンの試合だけに入っていて、その中にも null の試合がある。
+{% enddocs %}
+
+{% docs opponent_points %}
+対戦相手の得点。
+{% enddocs %}
+
+{% docs q1_points %}
+第 1 クォーターの得点。
+{% enddocs %}
+
+{% docs q2_points %}
+第 2 クォーターの得点。
+{% enddocs %}
+
+{% docs q3_points %}
+第 3 クォーターの得点。
+{% enddocs %}
+
+{% docs q4_points %}
+第 4 クォーターの得点。
+{% enddocs %}
+
+{% docs overtime_points %}
+延長の得点の合計。延長がない試合はほとんどが null。
+{% enddocs %}
+
+{% docs bench_points %}
+ベンチから出場した選手の得点の合計。
+{% enddocs %}
+
+{% docs points_in_the_paint %}
+ペイントエリア（ゴール下の制限区域）での得点。
+{% enddocs %}
+
+{% docs fast_break_points %}
+速攻での得点。
+{% enddocs %}
+
+{% docs second_chance_points %}
+オフェンスリバウンドの後の攻撃での得点（セカンドチャンスポイント）。
+{% enddocs %}
+
+{% docs points_off_turnovers %}
+相手のターンオーバーの後の攻撃での得点。
+{% enddocs %}
+
+{% docs biggest_lead %}
+試合中の最大のリード（点差）。
+{% enddocs %}
+
+{% docs lead_changes %}
+試合中にリードしているチームが入れ替わった回数。
+{% enddocs %}
+
+{% docs times_tied %}
+試合中に同点になった回数。
+{% enddocs %}
+
+{% docs season_wins %}
+この試合を終えた時点での、シーズンの通算勝利数。
+{% enddocs %}
+
+{% docs season_losses %}
+この試合を終えた時点での、シーズンの通算敗戦数。
+{% enddocs %}
+
+{% docs playoff_seed %}
+プレーオフ・プレーインのシード順位。それ以外の試合はほとんどが null。
+{% enddocs %}
+
+{% docs starting_position %}
+先発したときのポジション（G・F・C）。ベンチから出場した場合と、出場しなかった場合は null。
+{% enddocs %}
+
+{% docs is_starter %}
+先発したか。false にはベンチから出場した場合と、出場しなかった場合の両方を含む。
+{% enddocs %}
+
+{% docs status_comment %}
+出場しなかった理由（例: DNP - Coach's Decision）。出場しなかった行でも null のことがある。
+{% enddocs %}
+
+{% docs action_number %}
+試合の中でのプレーの通し番号。
+{% enddocs %}
+
+{% docs period %}
+ピリオド。1〜4 が通常のクォーターで、5 以降は延長。
+{% enddocs %}
+
+{% docs clock %}
+ピリオドの残り時間。ISO 8601 の期間の形式（例: PT11M56.00S は残り 11 分 56 秒）。
+{% enddocs %}
+
+{% docs shot_type %}
+シュートの種類（例: Jump Shot、Layup Shot）。
+{% enddocs %}
+
+{% docs is_made %}
+決まったか。
+{% enddocs %}
+
+{% docs shot_value %}
+2 点か 3 点か。2019-20 シーズンの途中で元データの記録の形式が変わったため、新しい形式では actionType（'2pt'・'3pt'）から求める。元データの誤った値（0）は null にする。
+{% enddocs %}
+
+{% docs shot_distance_ft %}
+リングからの距離（フィート）。コートの長さ（94 フィート）を超える誤った値は null にする。
+{% enddocs %}
+
+{% docs area %}
+シュートしたエリア（例: Restricted Area、Left Corner 3）。2021-22 シーズンまでは null。
+{% enddocs %}
+
+{% docs area_detail %}
+リングからの距離の帯（フィート）と方向（例: 16-24 Left）。area と同じく 2021-22 シーズンまでは null。
+{% enddocs %}
+
+{% docs description %}
+プレーの説明文（例: MISS V. Wembanyama driving Layup）。
+{% enddocs %}
+
+{% docs x %}
+コート上の横方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
+{% enddocs %}
+
+{% docs y %}
+コート上の縦方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
+{% enddocs %}
+
+{% docs team_games_is_win %}
+元データの誤りで、得点が同じ（0-0 を含む）なのに勝敗が付いている試合がごく一部にある。
+{% enddocs %}
+
+{% docs team_games_minutes %}
+チームの選手の出場時間の合計（分）。延長がなければ 240（5 人 × 48 分）。オールスターの試合と、プレシーズンの一部の試合は 240 未満。
+{% enddocs %}
+
+{% docs team_games_opponent_team_id %}
+対戦相手のチームの team_id。
+{% enddocs %}
+
+{% docs team_games_plus_minus %}
+チームの行では、一部の行を除いて試合の得失点差と同じ。
+{% enddocs %}
+
+{% docs team_games_points %}
+チームの得点。
+{% enddocs %}
+
+{% docs player_games_game_date %}
+一部のプレシーズンの行は null。
+{% enddocs %}
+
+{% docs player_games_is_home %}
+一部のプレシーズンの行（team_name が null の行）は null。
+{% enddocs %}
+
+{% docs player_games_is_win %}
+一部のプレシーズンの行（team_name が null の行）と、ごく一部のレギュラーシーズンの行は null。
+{% enddocs %}
+
+{% docs player_games_minutes %}
+出場時間（分）。元データの一部（プレシーズン）にある '6:05' のような分:秒の値は分に換算する。負の値は誤りとみなして null にする。出場しなかった行の多くは null。
+{% enddocs %}
+
+{% docs player_games_player_name %}
+元データの名と姓をスペースでつないだもの。元データで名前が空の行（一部のプレシーズン・オールスター）は空文字。
+{% enddocs %}
+
+{% docs player_games_points %}
+得点。一部のプレシーズンの行は null。
+{% enddocs %}
+
+{% docs player_games_team_id %}
+選手の所属チーム。元データで空の行は、同じ試合のチームのボックススコアから補っている。チーム名が空の一部のプレシーズンの行と、一部のオールスターの行は補えず null。
+{% enddocs %}
+
+{% docs player_games_opponent_team_id %}
+対戦相手のチーム。team_id と同じ方法で補っている。
+{% enddocs %}
+
+{% docs player_games_team_name %}
+一部のプレシーズンの行は null。
+{% enddocs %}
+
+{% docs player_games_team_city %}
+一部のオールスターの行は null。
+{% enddocs %}
+
+{% docs shots_player_name %}
+シュートした選手の名前。null の行がある（大半は 2025-26 シーズンの一部の試合）。
+{% enddocs %}
+
+{% docs shots_team_abbreviation %}
+チームの略称（例: BOS）。2025-26 シーズンの一部の試合は null。
+{% enddocs %}
+
+{% docs shots_team_id %}
+シュートしたチーム。
+{% enddocs %}
+
+{% docs games_arena_name %}
+2025-26 シーズンの試合だけに入っている。
+{% enddocs %}
+
+{% docs scoreless_games_note %}
+2024-25 シーズンの一部の試合は、元データで両チームの得点が 0 と記録されている（フィールドゴールなどの記録はあり、勝敗も付いている）。
 {% enddocs %}

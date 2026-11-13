@@ -23,57 +23,59 @@ models:
               arguments:
                 values: [Preseason, Regular Season, All-Star, Playoffs, Play-In, NBA Cup Final]
       - name: game_label
-        description: >
-          試合の区分の表示名（例: NBA Finals、East First Round）。プレーオフや特別な試合だけに入っている。
-          表記揺れがあるため、集計には game_type を使う。
+        description: '{{ doc("game_label") }}'
       - name: game_sub_label
-        description: "game_label の補足（例: Game 5）。"
+        description: '{{ doc("game_sub_label") }}'
       - name: game_started_at_est
-        description: 試合開始日時（米国東部時間）。
+        description: '{{ doc("game_started_at_est") }}'
       - name: game_date
         description: '{{ doc("game_date") }}'
         data_tests:
           - not_null
       - name: home_team_id
-        description: ホームチームの team_id。
+        description: '{{ doc("home_team_id") }}'
         data_tests:
           - not_null
       - name: home_team_city
-        description: ホームチームの都市名。オールスターの一部の試合は null。
+        description: '{{ doc("home_team_city") }}'
       - name: home_team_name
-        description: ホームチームのチーム名（都市名を除いた部分）。
+        description: '{{ doc("home_team_name") }}'
       - name: away_team_id
-        description: アウェイチームの team_id。
+        description: '{{ doc("away_team_id") }}'
         data_tests:
           - not_null
       - name: away_team_city
-        description: アウェイチームの都市名。オールスターの一部の試合は null。
+        description: '{{ doc("away_team_city") }}'
       - name: away_team_name
-        description: アウェイチームのチーム名（都市名を除いた部分）。
+        description: '{{ doc("away_team_name") }}'
       - name: home_score
-        description: ホームチームの得点。
+        description: >
+          {{ doc("home_score") }}
+          {{ doc("scoreless_games_note") }}
         data_tests:
           - not_null
       - name: away_score
-        description: アウェイチームの得点。
+        description: >
+          {{ doc("away_score") }}
+          {{ doc("scoreless_games_note") }}
         data_tests:
           - not_null
       - name: winner_team_id
-        description: >
-          勝ったチームの team_id。home_team_id か away_team_id のどちらか
-          （tests/assert_winner_is_home_or_away.sql で確かめる）。
+        description: '{{ doc("winner_team_id") }}'
         data_tests:
           - not_null
       - name: attendance
-        description: 観客数。2025-26 シーズンの試合だけに入っていて、その中にも null の試合がある。
+        description: '{{ doc("attendance") }}'
       - name: arena_id
-        description: 会場の ID。全試合に入っているが、2005-06 シーズンの 1 試合は 0。
+        description: '{{ doc("arena_id") }}'
       - name: arena_name
-        description: 会場の名前。2025-26 シーズンの試合だけに入っている。
+        description: >
+          {{ doc("arena_name") }}
+          {{ doc("games_arena_name") }}
       - name: arena_city
-        description: 会場の都市名。2025-26 シーズンの試合だけに入っている。
+        description: '{{ doc("arena_city") }}'
       - name: arena_state
-        description: "会場の州の略称（例: CA）。2025-26 シーズンの試合だけに入っていて、その中にも null の試合がある。"
+        description: '{{ doc("arena_state") }}'
 
   - name: stg_players
     description: >
@@ -178,7 +180,9 @@ models:
                 to: ref('stg_games')
                 field: game_id
       - name: team_id
-        description: '{{ doc("team_id") }}'
+        description: >
+          {{ doc("team_id") }}
+          {{ doc("team_id_join_hint") }}
         data_tests:
           - not_null
       - name: season_start_year
@@ -202,7 +206,7 @@ models:
           現在の 30 チームは seeds の nba_arenas.team_name と結合できる（relationships テストで確かめる）。
           2025-26 シーズンの一部の試合にある余分な行（得点が 0 の行）は null。
       - name: opponent_team_id
-        description: 対戦相手のチームの team_id。
+        description: '{{ doc("team_games_opponent_team_id") }}'
         data_tests:
           - not_null
       - name: opponent_team_city
@@ -214,14 +218,18 @@ models:
       - name: is_win
         description: >
           {{ doc("is_win") }}
-          元データの誤りで、得点が同じ（0-0 を含む）なのに勝敗が付いている試合がごく一部にある。
+          {{ doc("team_games_is_win") }}
           2025-26 シーズンの一部の試合にある余分な行（得点が 0 の行）は null。
       - name: points
-        description: チームの得点。
+        description: >
+          {{ doc("team_games_points") }}
+          {{ doc("scoreless_games_note") }}
         data_tests:
           - not_null
       - name: opponent_points
-        description: 対戦相手の得点。
+        description: >
+          {{ doc("opponent_points") }}
+          {{ doc("scoreless_games_note") }}
         data_tests:
           - not_null
       - name: field_goals_made
@@ -253,43 +261,44 @@ models:
       - name: personal_fouls
         description: '{{ doc("personal_fouls") }}'
       - name: plus_minus
-        description: '{{ doc("plus_minus") }}'
+        description: >
+          {{ doc("plus_minus") }}
+          {{ doc("team_games_plus_minus") }}
       - name: minutes
         description: >
-          チームの選手の出場時間の合計（分）。延長がなければ 240（5 人 × 48 分）。
-          オールスターの試合と、プレシーズンの一部の試合は 240 未満。
+          {{ doc("team_games_minutes") }}
       - name: q1_points
-        description: 第 1 クォーターの得点。
+        description: '{{ doc("q1_points") }}'
       - name: q2_points
-        description: 第 2 クォーターの得点。
+        description: '{{ doc("q2_points") }}'
       - name: q3_points
-        description: 第 3 クォーターの得点。
+        description: '{{ doc("q3_points") }}'
       - name: q4_points
-        description: 第 4 クォーターの得点。
+        description: '{{ doc("q4_points") }}'
       - name: overtime_points
-        description: 延長の得点の合計。延長がない試合はほとんどが null。
+        description: '{{ doc("overtime_points") }}'
       - name: bench_points
-        description: ベンチから出場した選手の得点の合計。
+        description: '{{ doc("bench_points") }}'
       - name: points_in_the_paint
-        description: ペイントエリア（ゴール下の制限区域）での得点。
+        description: '{{ doc("points_in_the_paint") }}'
       - name: fast_break_points
-        description: 速攻での得点。
+        description: '{{ doc("fast_break_points") }}'
       - name: second_chance_points
-        description: オフェンスリバウンドの後の攻撃での得点（セカンドチャンスポイント）。
+        description: '{{ doc("second_chance_points") }}'
       - name: points_off_turnovers
-        description: 相手のターンオーバーの後の攻撃での得点。
+        description: '{{ doc("points_off_turnovers") }}'
       - name: biggest_lead
-        description: 試合中の最大のリード（点差）。
+        description: '{{ doc("biggest_lead") }}'
       - name: lead_changes
-        description: 試合中にリードしているチームが入れ替わった回数。
+        description: '{{ doc("lead_changes") }}'
       - name: times_tied
-        description: 試合中に同点になった回数。
+        description: '{{ doc("times_tied") }}'
       - name: season_wins
-        description: この試合を終えた時点での、シーズンの通算勝利数。
+        description: '{{ doc("season_wins") }}'
       - name: season_losses
-        description: この試合を終えた時点での、シーズンの通算敗戦数。
+        description: '{{ doc("season_losses") }}'
       - name: playoff_seed
-        description: プレーオフ・プレーインのシード順位。それ以外の試合はほとんどが null。
+        description: '{{ doc("playoff_seed") }}'
 
   - name: stg_player_game_stats
     description: >
@@ -315,7 +324,9 @@ models:
               config:
                 severity: warn
       - name: player_id
-        description: '{{ doc("player_id") }}'
+        description: >
+          {{ doc("player_id") }}
+          {{ doc("player_id_join_hint") }}
         data_tests:
           - not_null
       - name: season_start_year
@@ -330,10 +341,10 @@ models:
       - name: game_date
         description: >
           {{ doc("game_date") }}
-          一部のプレシーズンの行は null。
+          {{ doc("player_games_game_date") }}
       - name: player_name
         description: >
-          元データの名と姓をスペースでつないだもの。元データで名前が空の行（一部のプレシーズン・オールスター）は空文字。
+          {{ doc("player_games_player_name") }}
           stg_players.player_name と同じ作り方。
       - name: team_id
         description: >
@@ -342,11 +353,12 @@ models:
       - name: team_city
         description: >
           {{ doc("team_city") }}
-          一部のオールスターの行は null。
+          {{ doc("player_games_team_city") }}
       - name: team_name
         description: >
           {{ doc("team_name") }}
-          一部のプレシーズンの行は null。int_player_game_stats で team_id を補うときの照合に使う。
+          {{ doc("player_games_team_name") }}
+          int_player_game_stats で team_id を補うときの照合に使う。
       - name: opponent_team_id
         description: 対戦相手のチームの team_id。team_id と同じく、元データで空の行がある。
       - name: opponent_team_city
@@ -356,23 +368,22 @@ models:
       - name: is_home
         description: >
           {{ doc("is_home") }}
-          一部のプレシーズンの行（team_name が null の行）は null。
+          {{ doc("player_games_is_home") }}
       - name: is_win
         description: >
           {{ doc("is_win") }}
-          一部のプレシーズンの行（team_name が null の行）と、ごく一部のレギュラーシーズンの行は null。
+          {{ doc("player_games_is_win") }}
       - name: starting_position
-        description: 先発したときのポジション（G・F・C）。ベンチから出場した場合と、出場しなかった場合は null。
+        description: '{{ doc("starting_position") }}'
       - name: is_starter
-        description: 先発したか。false にはベンチから出場した場合と、出場しなかった場合の両方を含む。
+        description: '{{ doc("is_starter") }}'
       - name: status_comment
-        description: "出場しなかった理由（例: DNP - Coach's Decision）。出場しなかった行でも null のことがある。"
+        description: '{{ doc("status_comment") }}'
       - name: minutes
         description: >
-          出場時間（分）。元データの一部（プレシーズン）にある '6:05' のような分:秒の値は分に換算する。
-          負の値は誤りとみなして null にする。出場しなかった行の多くは null。
+          {{ doc("player_games_minutes") }}
       - name: points
-        description: 得点。一部のプレシーズンの行は null。
+        description: '{{ doc("player_games_points") }}'
       - name: field_goals_made
         description: '{{ doc("field_goals_made") }}'
       - name: field_goals_attempted
@@ -428,7 +439,7 @@ models:
               config:
                 severity: warn
       - name: action_number
-        description: 試合の中でのプレーの通し番号。
+        description: '{{ doc("action_number") }}'
         data_tests:
           - not_null
       - name: season_start_year
@@ -445,47 +456,47 @@ models:
           {{ doc("game_date") }}
           stg_games と結合できない試合は null。
       - name: period
-        description: ピリオド。1〜4 が通常のクォーターで、5 以降は延長。
+        description: '{{ doc("period") }}'
         data_tests:
           - not_null
       - name: clock
-        description: "ピリオドの残り時間。ISO 8601 の期間の形式（例: PT11M56.00S は残り 11 分 56 秒）。"
+        description: '{{ doc("clock") }}'
       - name: team_id
-        description: シュートしたチーム。
+        description: '{{ doc("shots_team_id") }}'
         data_tests:
           - not_null
       - name: team_abbreviation
-        description: "チームの略称（例: BOS）。2025-26 シーズンの一部の試合は null。"
+        description: '{{ doc("shots_team_abbreviation") }}'
       - name: player_id
-        description: '{{ doc("player_id") }}'
+        description: >
+          {{ doc("player_id") }}
+          {{ doc("player_id_join_hint") }}
       - name: player_name
         description: >
-          シュートした選手の名前。null の行がある（大半は 2025-26 シーズンの一部の試合）ため、
-          名前が必要なときは player_id で stg_players と結合する。
+          {{ doc("shots_player_name") }}
+          {{ doc("player_id_join_hint") }}
       - name: shot_type
-        description: "シュートの種類（例: Jump Shot、Layup Shot）。"
+        description: '{{ doc("shot_type") }}'
       - name: is_made
-        description: 決まったか。
+        description: '{{ doc("is_made") }}'
         data_tests:
           - not_null
       - name: shot_value
-        description: >
-          2 点か 3 点か。2019-20 シーズンの途中で元データの記録の形式が変わったため、
-          新しい形式では actionType（'2pt'・'3pt'）から求める。元データの誤った値（0）は null にする。
+        description: '{{ doc("shot_value") }}'
         data_tests:
           - accepted_values:
               arguments:
                 values: [2, 3]
                 quote: false
       - name: shot_distance_ft
-        description: リングからの距離（フィート）。コートの長さ（94 フィート）を超える誤った値は null にする。
+        description: '{{ doc("shot_distance_ft") }}'
       - name: area_detail
-        description: "リングからの距離の帯（フィート）と方向（例: 16-24 Left）。area と同じく 2021-22 シーズンまでは null。"
+        description: '{{ doc("area_detail") }}'
       - name: description
-        description: "プレーの説明文（例: MISS V. Wembanyama driving Layup）。"
+        description: '{{ doc("description") }}'
       - name: area
-        description: "シュートしたエリア（例: Restricted Area、Left Corner 3）。2021-22 シーズンまでは null。"
+        description: '{{ doc("area") }}'
       - name: x
-        description: コート上の横方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
+        description: '{{ doc("x") }}'
       - name: y
-        description: コート上の縦方向の位置。2019-20 シーズンより前は null。2019-20 も一部の試合は null。
+        description: '{{ doc("y") }}'
