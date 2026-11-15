@@ -1,0 +1,96 @@
+chartConfig:
+  config:
+    eChartsConfig:
+      axisLabelFontSize: 16
+      axisTitleFontSize: 16
+      series:
+        - encode:
+            xRef:
+              field: team_games_points_per_game
+            yRef:
+              field: team_games_opponent_points_per_game
+              pivotValues:
+                - field: playoff_team
+                  value: プレーオフ進出
+          name: プレーオフ進出
+          type: scatter
+        - encode:
+            xRef:
+              field: team_games_points_per_game
+            yRef:
+              field: team_games_opponent_points_per_game
+              pivotValues:
+                - field: playoff_team
+                  value: 進出なし
+          name: 進出なし
+          type: scatter
+      xAxis:
+        - name: 1試合平均得点
+      yAxis:
+        - inverse: true
+          name: 1試合平均失点（上ほど少ない）
+    layout:
+      showIncompletePeriod: true
+      xField: team_games_points_per_game
+      yField:
+        - team_games_opponent_points_per_game
+  type: cartesian
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、チームごとの1試合平均の得点と失点。プレーオフに進んだかどうかで色を分ける。
+metricQuery:
+  additionalMetrics: []
+  customDimensions:
+    - dimensionType: string
+      id: playoff_team
+      name: プレーオフ
+      sql: >-
+        CASE WHEN ${team_games.team_name} IN (SELECT team_name FROM
+        marts.team_games WHERE season = '2025-26' AND game_type = 'Playoffs')
+        THEN 'プレーオフ進出' ELSE '進出なし' END
+      table: team_games
+      type: sql
+  dimensions:
+    - playoff_team
+    - team_games_team_name
+  exploreName: team_games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: team_games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: team_games_game_type
+          values:
+            - Regular Season
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - team_games_points_per_game
+    - team_games_opponent_points_per_game
+  sorts:
+    - descending: true
+      fieldId: team_games_points_per_game
+  tableCalculations: []
+  timezone: project_timezone
+name: 1試合平均の得点と失点（2025-26）
+pivotConfig:
+  columns:
+    - playoff_team
+slug: points-for-vs-against
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - playoff_team
+    - team_games_team_name
+    - team_games_points_per_game
+    - team_games_opponent_points_per_game
+tableName: team_games
+verification: null
+version: 1

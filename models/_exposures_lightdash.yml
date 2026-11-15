@@ -1,0 +1,157 @@
+# lightdash/charts/ の Lightdash のグラフを、モデルの下流の使われ方として登録する。グラフ 1 本につき 1 つ。
+# name は lightdash_ とグラフの slug（- を _ に置き換え）、label はグラフの名前、description はグラフのファイルと説明。
+# グラフを足したとき、グラフが使う mart や名前・説明を変えたときは、ここも直す。
+exposures:
+  - name: lightdash_atlantic_home_away_points
+    label: "アトランティック・ディビジョンのホームとアウェイの1試合平均得点（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/atlantic-home-away-points.yml）。2025-26 シーズンのレギュラーシーズンで、アトランティック・ディビジョンの5チームの、ホームとアウェイの1試合平均得点。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_attendance_by_arena_map
+    label: "アリーナ別の1試合平均観客数（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/attendance-by-arena-map.yml）。2025-26 シーズンのレギュラーシーズンで、本拠地アリーナごとの1試合平均観客数。点の大きさが平均観客数。"
+    depends_on:
+      - ref('games')
+      - ref('arenas')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_points_for_vs_against
+    label: "1試合平均の得点と失点（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/points-for-vs-against.yml）。2025-26 シーズンのレギュラーシーズンで、チームごとの1試合平均の得点と失点。プレーオフに進んだかどうかで色を分ける。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_points_mix_by_team_100pct
+    label: "3Pの得点が多い10チームの得点の内訳（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/points-mix-by-team-100pct.yml）。2025-26 シーズンのレギュラーシーズンで、3P の得点が多い10チームの、得点に占める 2P・3P・FT の割合。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_points_mix_trend
+    label: "1試合平均得点の内訳の推移（2000-01〜2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/points-mix-trend.yml）。レギュラーシーズンの、チームの1試合平均得点を2P・3P・FTに分けた推移。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_points_per_game_by_team
+    label: "1試合平均得点が多い10チーム（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/points-per-game-by-team.yml）。2025-26 シーズンのレギュラーシーズンで、1試合平均得点が多い10チームを高い順に並べる。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_shot_distance_histogram
+    label: "シュートの距離の分布（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/shot-distance-histogram.yml）。2025-26 シーズンのレギュラーシーズンで、フィールドゴールの試投を、ゴールからの距離で 3 フィートごとに数える。39 フィート以上はまとめる。"
+    depends_on:
+      - ref('shots')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_shot_share_by_season_and_distance_heatmap
+    label: "シーズンと距離ごとのシュートの割合（2011-12〜2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/shot-share-by-season-and-distance-heatmap.yml）。2011-12〜2025-26 シーズンのレギュラーシーズンで、シーズンごとのフィールドゴールの試投に占める、ゴールからの距離の区間ごとの割合。"
+    depends_on:
+      - ref('shots')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_shots_area_to_result_sankey
+    label: "エリア別のシュートの成功・失敗（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/shots-area-to-result-sankey.yml）。2025-26 シーズンのレギュラーシーズンで、エリアごとのフィールドゴールの試投が、成功と失敗にどう分かれるか。"
+    depends_on:
+      - ref('shots')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_sixers_monthly_wins_and_win_pct
+    label: "76ersの月ごとの勝利数と勝率（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/sixers-monthly-wins-and-win-pct.yml）。2025-26 シーズンのレギュラーシーズンで、76ers の月ごとの勝利数（棒）と勝率（線）。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_sixers_points_by_player_treemap
+    label: "76ersの選手別の得点（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/sixers-points-by-player-treemap.yml）。2025-26 シーズンのレギュラーシーズンで、76ers の選手ごとの得点。"
+    depends_on:
+      - ref('player_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_sixers_shots_by_area
+    label: "76ersのエリア別のシュート本数の割合（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/sixers-shots-by-area.yml）。2025-26 シーズンのレギュラーシーズンで、76ers のフィールドゴールの試投数に占めるエリアごとの割合。"
+    depends_on:
+      - ref('shots')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_sixers_win_pct_big_number
+    label: "76ersの勝率（2025-26、前シーズンとの差）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/sixers-win-pct-big-number.yml）。76ers のレギュラーシーズンの勝率。2025-26 シーズンの値と、2024-25 シーズンとの差。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_sixers_win_pct_gauge
+    label: "76ersの勝率（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/sixers-win-pct-gauge.yml）。2025-26 シーズンのレギュラーシーズンの 76ers の勝率。5割より上か下かを色で分ける。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_team_stats_table
+    label: "勝率が高い10チームのスタッツ（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/team-stats-table.yml）。2025-26 シーズンのレギュラーシーズンで、勝率が高い10チームの勝率・1試合平均の得点・失点・得失点差・3P成功率。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_three_point_attempts_trend
+    label: "1試合平均の3P試投数の推移（2000-01〜2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/three-point-attempts-trend.yml）。レギュラーシーズンの、チームの1試合平均の3P試投数の推移。"
+    depends_on:
+      - ref('team_games')
+    owner:
+      name: nba-dbt-playground
+
+  - name: lightdash_three_point_funnel
+    label: "シュート全体から3P成功まで（2025-26）"
+    type: dashboard
+    description: "Lightdash のグラフ（lightdash/charts/three-point-funnel.yml）。2025-26 シーズンのレギュラーシーズンで、フィールドゴールの試投、そのうち3Pの試投、そのうち3Pの成功の本数。"
+    depends_on:
+      - ref('shots')
+    owner:
+      name: nba-dbt-playground

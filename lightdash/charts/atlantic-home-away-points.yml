@@ -1,0 +1,94 @@
+chartConfig:
+  config:
+    eChartsConfig:
+      axisLabelFontSize: 16
+      axisTitleFontSize: 16
+      series:
+        - encode:
+            xRef:
+              field: team_games_team_name
+            yRef:
+              field: team_games_points_per_game
+              pivotValues:
+                - field: team_games_is_home
+                  value: true
+          name: ホーム
+          type: bar
+        - encode:
+            xRef:
+              field: team_games_team_name
+            yRef:
+              field: team_games_points_per_game
+              pivotValues:
+                - field: team_games_is_home
+                  value: false
+          name: アウェイ
+          type: bar
+      xAxis:
+        - name: チーム
+      yAxis:
+        - name: 1試合平均得点
+    layout:
+      showIncompletePeriod: true
+      xField: team_games_team_name
+      yField:
+        - team_games_points_per_game
+  type: cartesian
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、アトランティック・ディビジョンの5チームの、ホームとアウェイの1試合平均得点。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - team_games_team_name
+    - team_games_is_home
+  exploreName: team_games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: team_games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: team_games_game_type
+          values:
+            - Regular Season
+        - id: team
+          operator: equals
+          target:
+            fieldId: team_games_team_name
+          values:
+            - 76ers
+            - Celtics
+            - Knicks
+            - Nets
+            - Raptors
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - team_games_points_per_game
+  sorts:
+    - descending: false
+      fieldId: team_games_team_name
+  tableCalculations: []
+  timezone: project_timezone
+name: アトランティック・ディビジョンのホームとアウェイの1試合平均得点（2025-26）
+pivotConfig:
+  columns:
+    - team_games_is_home
+slug: atlantic-home-away-points
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - team_games_team_name
+    - team_games_is_home
+    - team_games_points_per_game
+tableName: team_games
+verification: null
+version: 1

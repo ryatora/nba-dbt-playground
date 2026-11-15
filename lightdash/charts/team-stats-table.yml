@@ -1,0 +1,103 @@
+chartConfig:
+  config:
+    columns:
+      team_full_name:
+        frozen: true
+        name: チーム
+        width: 180
+      team_games_opponent_points_per_game:
+        name: 平均失点
+        width: 85
+      team_games_point_differential_per_game:
+        name: 平均得失点差
+        width: 105
+      team_games_points_per_game:
+        name: 平均得点
+        width: 85
+      team_games_team_city:
+        visible: false
+      team_games_team_name:
+        visible: false
+      team_games_three_point_pct:
+        name: 3P成功率
+        width: 85
+      team_games_win_pct:
+        displayStyle: bar
+        name: 勝率
+        width: 120
+    hideRowNumbers: false
+    showResultsTotal: false
+    showTableNames: false
+  type: table
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、勝率が高い10チームの勝率・1試合平均の得点・失点・得失点差・3P成功率。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - team_games_team_city
+    - team_games_team_name
+  exploreName: team_games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: team_games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: team_games_game_type
+          values:
+            - Regular Season
+      id: root
+  limit: 10
+  metricOverrides:
+    team_games_opponent_points_per_game:
+      formatOptions:
+        round: 1
+        type: number
+    team_games_point_differential_per_game:
+      formatOptions:
+        round: 1
+        type: number
+    team_games_points_per_game:
+      formatOptions:
+        round: 1
+        type: number
+  metrics:
+    - team_games_win_pct
+    - team_games_points_per_game
+    - team_games_opponent_points_per_game
+    - team_games_point_differential_per_game
+    - team_games_three_point_pct
+  sorts:
+    - descending: true
+      fieldId: team_games_win_pct
+    - descending: false
+      fieldId: team_games_team_name
+  tableCalculations:
+    - displayName: チーム
+      name: team_full_name
+      sql: ${team_games.team_city} || ' ' || ${team_games.team_name}
+      type: string
+  timezone: project_timezone
+name: 勝率が高い10チームのスタッツ（2025-26）
+slug: team-stats-table
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - team_full_name
+    - team_games_team_city
+    - team_games_team_name
+    - team_games_win_pct
+    - team_games_points_per_game
+    - team_games_opponent_points_per_game
+    - team_games_point_differential_per_game
+    - team_games_three_point_pct
+tableName: team_games
+verification: null
+version: 1

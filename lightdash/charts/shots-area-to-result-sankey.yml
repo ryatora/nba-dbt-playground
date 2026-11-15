@@ -1,0 +1,61 @@
+chartConfig:
+  config:
+    metricFieldId: shots_shot_count
+    sourceFieldId: shots_area
+    targetFieldId: shot_result
+  type: sankey
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、エリアごとのフィールドゴールの試投が、成功と失敗にどう分かれるか。
+metricQuery:
+  additionalMetrics: []
+  customDimensions:
+    - dimensionType: string
+      id: shot_result
+      name: 結果
+      sql: CASE WHEN ${shots.is_made} THEN '成功' ELSE '失敗' END
+      table: shots
+      type: sql
+  dimensions:
+    - shots_area
+    - shot_result
+  exploreName: shots
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: shots_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: shots_game_type
+          values:
+            - Regular Season
+        - id: area
+          operator: notNull
+          target:
+            fieldId: shots_area
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - shots_shot_count
+  sorts:
+    - descending: true
+      fieldId: shots_shot_count
+  tableCalculations: []
+  timezone: project_timezone
+name: エリア別のシュートの成功・失敗（2025-26）
+slug: shots-area-to-result-sankey
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - shots_area
+    - shot_result
+    - shots_shot_count
+tableName: shots
+verification: null
+version: 1

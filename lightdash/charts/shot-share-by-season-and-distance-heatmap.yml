@@ -1,0 +1,99 @@
+chartConfig:
+  config:
+    columns:
+      distance_band:
+        name: 距離（フィート）
+      distance_share:
+        name: 割合
+      shots_season:
+        name: シーズン
+      shots_shot_count:
+        visible: false
+    conditionalFormattings:
+      - color:
+          end: "#1d4ed8"
+          start: "#eff6ff"
+        rule:
+          max: auto
+          min: auto
+        target:
+          fieldId: distance_share
+    hideRowNumbers: true
+    showResultsTotal: false
+    showTableNames: false
+  type: table
+contentType: chart
+description: 2011-12〜2025-26 シーズンのレギュラーシーズンで、シーズンごとのフィールドゴールの試投に占める、ゴールからの距離の区間ごとの割合。
+metricQuery:
+  additionalMetrics: []
+  customDimensions:
+    - binType: custom_range
+      customRange:
+        - to: 3
+        - from: 3
+          to: 10
+        - from: 10
+          to: 16
+        - from: 16
+          to: 24
+        - from: 24
+      dimensionId: shots_shot_distance_ft
+      id: distance_band
+      name: 距離（フィート）
+      table: shots
+      type: bin
+  dimensions:
+    - shots_season
+    - distance_band
+  exploreName: shots
+  filters:
+    dimensions:
+      and:
+        - id: season-start-year
+          operator: greaterThanOrEqual
+          target:
+            fieldId: shots_season_start_year
+          values:
+            - 2011
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: shots_game_type
+          values:
+            - Regular Season
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - shots_shot_count
+  sorts:
+    - descending: false
+      fieldId: shots_season
+    - descending: false
+      fieldId: distance_band
+  tableCalculations:
+    - displayName: 割合
+      format:
+        round: 1
+        type: percent
+      name: distance_share
+      sql: >-
+        ${shots.shot_count} / SUM(${shots.shot_count}) OVER (PARTITION BY
+        ${shots.season})
+  timezone: project_timezone
+name: シーズンと距離ごとのシュートの割合（2011-12〜2025-26）
+pivotConfig:
+  columns:
+    - distance_band
+slug: shot-share-by-season-and-distance-heatmap
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - shots_season
+    - distance_band
+    - 距離（フィート）
+    - shots_shot_count
+    - distance_share
+tableName: shots
+verification: null
+version: 1

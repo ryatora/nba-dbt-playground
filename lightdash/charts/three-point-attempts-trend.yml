@@ -1,0 +1,58 @@
+chartConfig:
+  config:
+    eChartsConfig:
+      axisLabelFontSize: 16
+      axisTitleFontSize: 16
+      series:
+        - encode:
+            xRef:
+              field: team_games_season
+            yRef:
+              field: team_games_three_pointers_attempted_per_game
+          type: line
+      xAxis:
+        - name: シーズン
+      yAxis:
+        - name: 1試合平均の3P試投数
+    layout:
+      xField: team_games_season
+      yField:
+        - team_games_three_pointers_attempted_per_game
+  type: cartesian
+contentType: chart
+description: レギュラーシーズンの、チームの1試合平均の3P試投数の推移。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - team_games_season
+  exploreName: team_games
+  filters:
+    dimensions:
+      and:
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: team_games_game_type
+          values:
+            - Regular Season
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - team_games_three_pointers_attempted_per_game
+  sorts:
+    - descending: false
+      fieldId: team_games_season
+  tableCalculations: []
+  timezone: project_timezone
+name: 1試合平均の3P試投数の推移（2000-01〜2025-26）
+slug: three-point-attempts-trend
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - team_games_season
+    - team_games_three_pointers_attempted_per_game
+tableName: team_games
+verification: null
+version: 1

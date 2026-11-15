@@ -1,0 +1,99 @@
+chartConfig:
+  config:
+    eChartsConfig:
+      axisLabelFontSize: 12
+      axisTitleFontSize: 16
+      series:
+        - encode:
+            xRef:
+              field: shot_distance_bin
+            yRef:
+              field: shots_shot_count
+          type: bar
+      xAxis:
+        - name: シュートの距離（フィート）
+      yAxis:
+        - name: シュート本数
+    layout:
+      showIncompletePeriod: true
+      xField: shot_distance_bin
+      yField:
+        - shots_shot_count
+  type: cartesian
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、フィールドゴールの試投を、ゴールからの距離で 3 フィートごとに数える。39 フィート以上はまとめる。
+metricQuery:
+  additionalMetrics: []
+  customDimensions:
+    - binType: custom_range
+      customRange:
+        - to: 3
+        - from: 3
+          to: 6
+        - from: 6
+          to: 9
+        - from: 9
+          to: 12
+        - from: 12
+          to: 15
+        - from: 15
+          to: 18
+        - from: 18
+          to: 21
+        - from: 21
+          to: 24
+        - from: 24
+          to: 27
+        - from: 27
+          to: 30
+        - from: 30
+          to: 33
+        - from: 33
+          to: 36
+        - from: 36
+          to: 39
+        - from: 39
+      dimensionId: shots_shot_distance_ft
+      id: shot_distance_bin
+      name: シュートの距離
+      table: shots
+      type: bin
+  dimensions:
+    - shot_distance_bin
+  exploreName: shots
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: shots_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: shots_game_type
+          values:
+            - Regular Season
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - shots_shot_count
+  sorts:
+    - descending: false
+      fieldId: shot_distance_bin
+  tableCalculations: []
+  timezone: project_timezone
+name: シュートの距離の分布（2025-26）
+slug: shot-distance-histogram
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - shot_distance_bin
+    - シュートの距離
+    - shots_shot_count
+tableName: shots
+verification: null
+version: 1

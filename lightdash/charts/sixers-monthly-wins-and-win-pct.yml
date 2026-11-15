@@ -1,0 +1,82 @@
+chartConfig:
+  config:
+    eChartsConfig:
+      axisLabelFontSize: 16
+      axisTitleFontSize: 16
+      series:
+        - encode:
+            xRef:
+              field: team_games_game_date_month
+            yRef:
+              field: team_games_wins
+          type: bar
+          yAxisIndex: 0
+        - encode:
+            xRef:
+              field: team_games_game_date_month
+            yRef:
+              field: team_games_win_pct
+          type: line
+          yAxisIndex: 1
+      xAxis:
+        - name: 月
+      yAxis:
+        - name: 勝利数
+        - name: 勝率
+    layout:
+      xField: team_games_game_date_month
+      yField:
+        - team_games_wins
+        - team_games_win_pct
+  type: cartesian
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、76ers の月ごとの勝利数（棒）と勝率（線）。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - team_games_game_date_month
+  exploreName: team_games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: team_games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: team_games_game_type
+          values:
+            - Regular Season
+        - id: team
+          operator: equals
+          target:
+            fieldId: team_games_team_name
+          values:
+            - 76ers
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - team_games_wins
+    - team_games_win_pct
+  sorts:
+    - descending: false
+      fieldId: team_games_game_date_month
+  tableCalculations: []
+  timezone: project_timezone
+name: 76ersの月ごとの勝利数と勝率（2025-26）
+slug: sixers-monthly-wins-and-win-pct
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - team_games_game_date_month
+    - team_games_wins
+    - team_games_win_pct
+tableName: team_games
+verification: null
+version: 1
