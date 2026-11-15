@@ -1,0 +1,63 @@
+chartConfig:
+  config:
+    darkModeTileBackground: openstreetmap
+    latitudeFieldId: arenas_latitude
+    locationType: scatter
+    longitudeFieldId: arenas_longitude
+    mapType: USA
+    maxBubbleSize: 20
+    minBubbleSize: 5
+    sizeFieldId: games_avg_attendance
+    tileBackground: openstreetmap
+  type: map
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、本拠地アリーナごとの1試合平均観客数。点の大きさが平均観客数。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - arenas_arena_name
+    - arenas_latitude
+    - arenas_longitude
+  exploreName: games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: games_game_type
+          values:
+            - Regular Season
+        - id: arena
+          operator: notNull
+          target:
+            fieldId: arenas_arena_name
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - games_avg_attendance
+  sorts:
+    - descending: true
+      fieldId: games_avg_attendance
+  tableCalculations: []
+  timezone: project_timezone
+name: アリーナ別の1試合平均観客数（2025-26）
+slug: attendance-by-arena-map
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - arenas_arena_name
+    - arenas_latitude
+    - arenas_longitude
+    - games_avg_attendance
+tableName: games
+verification: null
+version: 1

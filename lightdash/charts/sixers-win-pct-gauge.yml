@@ -1,0 +1,59 @@
+chartConfig:
+  config:
+    max: 1
+    min: 0
+    sections:
+      - color: "#F87171"
+        max: 0.5
+        min: 0
+      - color: "#34D399"
+        max: 1
+        min: 0.5
+    selectedField: team_games_win_pct
+    showAxisLabels: true
+  type: gauge
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンの 76ers の勝率。5割より上か下かを色で分ける。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions: []
+  exploreName: team_games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: team_games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: team_games_game_type
+          values:
+            - Regular Season
+        - id: team
+          operator: equals
+          target:
+            fieldId: team_games_team_name
+          values:
+            - 76ers
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - team_games_win_pct
+  sorts: []
+  tableCalculations: []
+  timezone: project_timezone
+name: 76ersの勝率（2025-26）
+slug: sixers-win-pct-gauge
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - team_games_win_pct
+tableName: team_games
+verification: null
+version: 1

@@ -67,6 +67,25 @@ dct serve                    # 表示された URL をブラウザで開く
 - `dbt build` で作ったテーブルを読むため、先に `dbt build` を実行しておく。
 - `dct serve` が `nba.duckdb` を開いている間は、`dbt build` がロックで失敗する。止めてから実行する。
 
+### Lightdash のグラフを送る
+
+`lightdash/charts/` には、[Lightdash](https://www.lightdash.com/) のグラフを YAML で置いています。
+
+- Lightdash の DuckDB の接続で公式の手順にあるのは MotherDuck と DuckLake なので、`nba.duckdb` の marts を MotherDuck にコピーし、MotherDuck につないだ Lightdash のプロジェクトで使う。
+- MotherDuck 用の profiles.yml は、リポジトリの外に置く。トークンは profiles.yml に書かず、環境変数から読む（`settings.motherduck_token` に `env_var()` を使う）。
+- 次のコマンドで、dbt の定義（`lightdash deploy`）とグラフ（`lightdash upload`）を Lightdash に送る。事前に `lightdash login` で Lightdash にログインしておく。
+
+```sh
+uv run dbt parse
+lightdash deploy --project-dir . --skip-dbt-compile --profiles-dir <MotherDuck 用の profiles.yml のディレクトリ>
+lightdash upload --force --path lightdash
+```
+
+- `--skip-dbt-compile` を付けると、`lightdash deploy` は `dbt compile` を実行せず、既存の `target/manifest.json` を読み込む。dbt の定義（モデル・YAML）を直したら、先に `uv run dbt parse` で manifest を作り直す。
+- `uv run dbt parse` はリポジトリの `profiles.yml`（手元の `nba.duckdb`）で manifest を作る。manifest のテーブルの参照先は、データベース名とスキーマ名で決まる。MotherDuck のデータベースも `nba` にし、スキーマ名は `macros/generate_schema_name.sql` で `+schema` の値（`marts`）をそのまま使うので、MotherDuck でも同じになる。
+- グラフを置くスペース（`lightdash-article`）は、Lightdash になければ `lightdash upload` が作る（Lightdash 3.179.0 で確認）。
+- `lightdash download` で書き出すと、スペースの定義（`spaces/*.space.yml`）に、メンバーのメールアドレスが入る（Lightdash 3.179.0 で確認）。グラフを送るのには要らないので、`.gitignore` で除いている。
+
 ## データの流れ
 
 ```mermaid
@@ -97,6 +116,7 @@ macros/              シーズン・試合の種類を gameId から求めるマ
 tests/               モデルの前提を確かめるテスト
 seeds/               本拠地アリーナの座標など、元データにない表（取得に使ったクエリも置く）
 charts/              dbt Charts のボード（グラフの種類ごとのディレクトリ。exposures は models/_exposures.yml）
+lightdash/charts/    Lightdash のグラフ（exposures は models/_exposures_lightdash.yml）
 dbt_charts.yml       dbt Charts の設定（ボードが読む DuckDB のファイル）
 dbt_project.yml      dbt の設定（staging で残すシーズンの開始年など）
 profiles.yml         DuckDB への接続先（nba.duckdb）。リポジトリのルートで dbt を実行すると読まれる

@@ -25,3 +25,7 @@ dbt_packages/
 .user.yml
 dbt_internal_packages/
 renders/
+
+# Lightdash（lightdash download が作るメタデータと、メンバーのメールアドレスを含むスペースの定義）
+.lightdash-metadata.json
+lightdash/spaces/

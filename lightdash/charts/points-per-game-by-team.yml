@@ -1,0 +1,75 @@
+chartConfig:
+  config:
+    eChartsConfig:
+      axisLabelFontSize: 14
+      axisTitleFontSize: 16
+      series:
+        - encode:
+            xRef:
+              field: team_games_team_name
+            yRef:
+              field: team_games_points_per_game
+          label:
+            position: right
+            show: true
+          type: bar
+      xAxis:
+        - inverse: true
+          name: チーム
+      yAxis:
+        - name: 1試合平均得点
+    layout:
+      flipAxes: true
+      xField: team_games_team_name
+      yField:
+        - team_games_points_per_game
+  type: cartesian
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、1試合平均得点が多い10チームを高い順に並べる。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - team_games_team_name
+  exploreName: team_games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: team_games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: team_games_game_type
+          values:
+            - Regular Season
+      id: root
+  limit: 10
+  metricOverrides:
+    team_games_points_per_game:
+      formatOptions:
+        round: 1
+        type: number
+  metrics:
+    - team_games_points_per_game
+  sorts:
+    - descending: true
+      fieldId: team_games_points_per_game
+    - descending: false
+      fieldId: team_games_team_name
+  tableCalculations: []
+  timezone: project_timezone
+name: 1試合平均得点が多い10チーム（2025-26）
+slug: points-per-game-by-team
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - team_games_team_name
+    - team_games_points_per_game
+tableName: team_games
+verification: null
+version: 1

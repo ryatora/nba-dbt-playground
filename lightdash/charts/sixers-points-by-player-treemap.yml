@@ -1,0 +1,56 @@
+chartConfig:
+  config:
+    groupFieldIds:
+      - player_games_player_name
+    leafDepth: 1
+    sizeMetricId: player_games_player_total_points
+  type: treemap
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、76ers の選手ごとの得点。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - player_games_player_name
+  exploreName: player_games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: player_games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: player_games_game_type
+          values:
+            - Regular Season
+        - id: team
+          operator: equals
+          target:
+            fieldId: player_games_team_name
+          values:
+            - 76ers
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - player_games_player_total_points
+  sorts:
+    - descending: true
+      fieldId: player_games_player_total_points
+  tableCalculations: []
+  timezone: project_timezone
+name: 76ersの選手別の得点（2025-26）
+slug: sixers-points-by-player-treemap
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - player_games_player_name
+    - player_games_player_total_points
+tableName: player_games
+verification: null
+version: 1

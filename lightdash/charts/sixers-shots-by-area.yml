@@ -1,0 +1,65 @@
+chartConfig:
+  config:
+    groupFieldIds:
+      - shots_area
+    isDonut: true
+    metricId: shots_shot_count
+    showLegend: false
+    showPercentage: true
+    showValue: false
+    valueLabel: outside
+    valueLabelColor: "#333333"
+  type: pie
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、76ers のフィールドゴールの試投数に占めるエリアごとの割合。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - shots_area
+  exploreName: shots
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: shots_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: shots_game_type
+          values:
+            - Regular Season
+        - id: team
+          operator: equals
+          target:
+            fieldId: shots_team_abbreviation
+          values:
+            - PHI
+        - id: area
+          operator: notNull
+          target:
+            fieldId: shots_area
+      id: root
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - shots_shot_count
+  sorts:
+    - descending: true
+      fieldId: shots_shot_count
+  tableCalculations: []
+  timezone: project_timezone
+name: 76ersのエリア別のシュート本数の割合（2025-26）
+slug: sixers-shots-by-area
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - shots_area
+    - shots_shot_count
+tableName: shots
+verification: null
+version: 1

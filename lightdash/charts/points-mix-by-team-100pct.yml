@@ -1,0 +1,103 @@
+chartConfig:
+  config:
+    eChartsConfig:
+      axisLabelFontSize: 12
+      axisTitleFontSize: 16
+      series:
+        - encode:
+            xRef:
+              field: team_games_team_name
+            yRef:
+              field: team_games_two_point_points
+          label:
+            position: inside
+            show: true
+          name: 2P
+          stack: points
+          type: bar
+        - encode:
+            xRef:
+              field: team_games_team_name
+            yRef:
+              field: team_games_three_point_points
+          label:
+            position: inside
+            show: true
+          name: 3P
+          stack: points
+          type: bar
+        - encode:
+            xRef:
+              field: team_games_team_name
+            yRef:
+              field: team_games_free_throw_points
+          label:
+            position: inside
+            show: true
+          name: FT
+          stack: points
+          type: bar
+      xAxis:
+        - inverse: true
+          name: チーム
+      yAxis:
+        - name: 得点の割合
+    layout:
+      flipAxes: true
+      showIncompletePeriod: true
+      stack: stack100
+      xField: team_games_team_name
+      yField:
+        - team_games_two_point_points
+        - team_games_three_point_points
+        - team_games_free_throw_points
+  type: cartesian
+contentType: chart
+description: 2025-26 シーズンのレギュラーシーズンで、3P の得点が多い10チームの、得点に占める 2P・3P・FT の割合。
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - team_games_team_name
+  exploreName: team_games
+  filters:
+    dimensions:
+      and:
+        - id: season
+          operator: equals
+          target:
+            fieldId: team_games_season
+          values:
+            - 2025-26
+        - id: game-type
+          operator: equals
+          target:
+            fieldId: team_games_game_type
+          values:
+            - Regular Season
+      id: root
+  limit: 10
+  metricOverrides: {}
+  metrics:
+    - team_games_two_point_points
+    - team_games_three_point_points
+    - team_games_free_throw_points
+  sorts:
+    - descending: true
+      fieldId: team_games_three_point_points
+    - descending: false
+      fieldId: team_games_team_name
+  tableCalculations: []
+  timezone: project_timezone
+name: 3Pの得点が多い10チームの得点の内訳（2025-26）
+slug: points-mix-by-team-100pct
+spaceSlug: lightdash-article
+tableConfig:
+  columnOrder:
+    - team_games_team_name
+    - team_games_two_point_points
+    - team_games_three_point_points
+    - team_games_free_throw_points
+tableName: team_games
+verification: null
+version: 1
